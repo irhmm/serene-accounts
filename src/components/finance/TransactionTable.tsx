@@ -136,7 +136,7 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
                   {transaction.amountOut > 0 ? formatCurrency(transaction.amountOut) : '-'}
                 </TableCell>
                 <TableCell className="text-right font-semibold whitespace-nowrap">
-                  {formatCurrency(transaction.balance)}
+                  {formatCurrency(transaction.amountIn - transaction.amountOut)}
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className="font-medium">

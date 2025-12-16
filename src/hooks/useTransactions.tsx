@@ -83,12 +83,16 @@ export function useTransactions() {
   };
 
   const updateTransaction = async (id: string, transaction: Omit<Transaction, 'id' | 'balance'>) => {
+    // Calculate per-row balance: amountIn - amountOut
+    const rowBalance = transaction.amountIn - transaction.amountOut;
+
     const { error } = await supabase.from('transactions').update({
       tanggal: transaction.date.toISOString().split('T')[0],
       detail: transaction.detail,
       type: transaction.type,
       jumlah_masuk_dp: transaction.amountIn,
       jumlah_keluar_dp: transaction.amountOut,
+      saldo_akhir: rowBalance,
       keterangan_freelance: transaction.freelanceCategory,
       status_pengeluaran: transaction.expenseStatus,
       catatan: transaction.notes || null,
