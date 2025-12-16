@@ -55,7 +55,7 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-hidden">
       {cards.map((card) => (
         <Card key={card.title} className="bg-card shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">{card.title}</p>
