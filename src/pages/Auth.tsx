@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { Wallet, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import logo from '@/assets/logo.jpg';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -67,10 +68,8 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-            <Wallet className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <CardTitle className="text-2xl">FinanceTrack</CardTitle>
+          <img src={logo} alt="Pembimbingmu Logo" className="mx-auto mb-4 h-16 w-16 rounded-lg object-cover" />
+          <CardTitle className="text-2xl">Pembimbingmu</CardTitle>
           <CardDescription>Masuk untuk mengelola keuangan Anda</CardDescription>
         </CardHeader>
         <CardContent>
