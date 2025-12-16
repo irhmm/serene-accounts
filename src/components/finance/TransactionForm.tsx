@@ -33,6 +33,7 @@ import {
   transactionTypeColors,
   freelanceCategoryLabels,
   expenseStatusLabels,
+  expenseStatusColors,
 } from "@/types/transaction";
 
 interface TransactionFormProps {
@@ -224,12 +225,18 @@ export function TransactionForm({
                 onValueChange={(v) => setExpenseStatus(v as ExpenseStatus)}
               >
                 <SelectTrigger className="input-focus">
-                  <SelectValue placeholder="Pilih status" />
+                  <SelectValue>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${expenseStatusColors[expenseStatus]}`}>
+                      {expenseStatusLabels[expenseStatus]}
+                    </span>
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
                   {Object.entries(expenseStatusLabels).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
-                      {label}
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${expenseStatusColors[value as ExpenseStatus]}`}>
+                        {label}
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -90,3 +90,10 @@ export const expenseStatusLabels: Record<ExpenseStatus, string> = {
   cancelled: 'Dibatalkan',
   refunded: 'Refund',
 };
+
+export const expenseStatusColors: Record<ExpenseStatus, string> = {
+  pending: 'bg-amber-100 text-amber-700 border-amber-300',
+  completed: 'bg-gray-100 text-gray-700 border-gray-300',
+  cancelled: 'bg-red-100 text-red-700 border-red-300',
+  refunded: 'bg-purple-100 text-purple-700 border-purple-300',
+};
