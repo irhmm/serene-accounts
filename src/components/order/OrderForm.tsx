@@ -27,14 +27,17 @@ import {
 import { cn } from '@/lib/utils';
 import {
   MitraOrder,
-  OrderType,
+  PredefinedOrderType,
   PaymentStatus,
   OrderStatus,
   SettlementStatus,
+  WorkStatus,
   orderTypeLabels,
   paymentStatusLabels,
   orderStatusLabels,
   settlementStatusLabels,
+  workStatusLabels,
+  isPredefinedOrderType,
 } from '@/types/mitraOrder';
 import { Worker } from '@/types/worker';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -65,7 +68,8 @@ function SectionHeader({ icon, title }: SectionHeaderProps) {
 export function OrderForm({ open, onClose, onSubmit, initialData, workers }: OrderFormProps) {
   const [nomorOrder, setNomorOrder] = useState('');
   const [detailOrder, setDetailOrder] = useState('');
-  const [typeOrder, setTypeOrder] = useState<OrderType>('lainnya');
+  const [selectedType, setSelectedType] = useState<string>('lainnya');
+  const [customTypeValue, setCustomTypeValue] = useState('');
   const [namaPjFreelance, setNamaPjFreelance] = useState('');
   const [catatan, setCatatan] = useState('');
   const [tanggalStart, setTanggalStart] = useState<Date>(new Date());
@@ -75,8 +79,11 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const [feeFreelance, setFeeFreelance] = useState(0);
   const [tanggalEnd, setTanggalEnd] = useState<Date | undefined>(undefined);
   const [status, setStatus] = useState<OrderStatus>('pending');
+  const [statusPengerjaan, setStatusPengerjaan] = useState<WorkStatus>('not_started');
   const [statusPelunasan, setStatusPelunasan] = useState<SettlementStatus>('belum_lunas');
   const [catatanAdmin, setCatatanAdmin] = useState('');
+
+  const isCustomType = selectedType === 'custom';
 
   // Auto-calculate kekurangan
   const kekurangan = Math.max(0, totalPembayaran - totalDp);
@@ -85,7 +92,14 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
     if (initialData) {
       setNomorOrder(initialData.nomorOrder);
       setDetailOrder(initialData.detailOrder);
-      setTypeOrder(initialData.typeOrder);
+      // Check if type is predefined or custom
+      if (isPredefinedOrderType(initialData.typeOrder) && initialData.typeOrder !== 'custom') {
+        setSelectedType(initialData.typeOrder);
+        setCustomTypeValue('');
+      } else {
+        setSelectedType('custom');
+        setCustomTypeValue(initialData.typeOrder);
+      }
       setNamaPjFreelance(initialData.namaPjFreelance);
       setCatatan(initialData.catatan || '');
       setTanggalStart(initialData.tanggalStart);
@@ -95,6 +109,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       setFeeFreelance(initialData.feeFreelance);
       setTanggalEnd(initialData.tanggalEnd || undefined);
       setStatus(initialData.status);
+      setStatusPengerjaan(initialData.statusPengerjaan || 'not_started');
       setStatusPelunasan(initialData.statusPelunasan);
       setCatatanAdmin(initialData.catatanAdmin || '');
     } else {
@@ -105,7 +120,8 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const resetForm = () => {
     setNomorOrder('');
     setDetailOrder('');
-    setTypeOrder('lainnya');
+    setSelectedType('lainnya');
+    setCustomTypeValue('');
     setNamaPjFreelance('');
     setCatatan('');
     setTanggalStart(new Date());
@@ -115,16 +131,18 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
     setFeeFreelance(0);
     setTanggalEnd(undefined);
     setStatus('pending');
+    setStatusPengerjaan('not_started');
     setStatusPelunasan('belum_lunas');
     setCatatanAdmin('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalTypeOrder = isCustomType ? customTypeValue : selectedType;
     onSubmit({
       nomorOrder,
       detailOrder,
-      typeOrder,
+      typeOrder: finalTypeOrder,
       namaPjFreelance,
       catatan: catatan || null,
       tanggalStart,
@@ -135,6 +153,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       feeFreelance,
       tanggalEnd: tanggalEnd || null,
       status,
+      statusPengerjaan,
       statusPelunasan,
       catatanAdmin: catatanAdmin || null,
     });
@@ -174,7 +193,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                 </div>
                 <div className="space-y-2">
                   <Label>Type Order</Label>
-                  <Select value={typeOrder} onValueChange={(v) => setTypeOrder(v as OrderType)}>
+                  <Select value={selectedType} onValueChange={setSelectedType}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -186,6 +205,15 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                       ))}
                     </SelectContent>
                   </Select>
+                  {isCustomType && (
+                    <Input
+                      value={customTypeValue}
+                      onChange={(e) => setCustomTypeValue(e.target.value)}
+                      placeholder="Ketik tipe order..."
+                      required
+                      className="mt-2"
+                    />
+                  )}
                 </div>
               </div>
               <div className="space-y-2">
@@ -230,6 +258,21 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(orderStatusLabels).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status Pengerjaan</Label>
+                  <Select value={statusPengerjaan} onValueChange={(v) => setStatusPengerjaan(v as WorkStatus)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(workStatusLabels).map(([value, label]) => (
                         <SelectItem key={value} value={value}>
                           {label}
                         </SelectItem>
