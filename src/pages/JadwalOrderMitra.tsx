@@ -133,28 +133,34 @@ export default function JadwalOrderMitra() {
           )}
         </div>
 
-        {/* Summary Cards */}
-        <OrderSummaryCards orders={orders} totalCount={totalCount} />
+        {/* Summary Cards - isolated from table scroll */}
+        <div className="overflow-hidden">
+          <OrderSummaryCards orders={orders} totalCount={totalCount} />
+        </div>
 
-        {/* Search & Filter */}
-        <OrderSearchFilter
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          paymentFilter={paymentFilter}
-          onPaymentFilterChange={setPaymentFilter}
-        />
+        {/* Search & Filter - isolated from table scroll */}
+        <div className="overflow-hidden">
+          <OrderSearchFilter
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            paymentFilter={paymentFilter}
+            onPaymentFilterChange={setPaymentFilter}
+          />
+        </div>
 
-        {/* Table */}
-        <OrderTable
-          orders={filteredOrders}
-          isAdmin={isAdmin}
-          onEdit={handleEditOrder}
-          onDelete={(order) => setDeletingOrder(order)}
-          currentPage={currentPage}
-          perPage={perPage}
-        />
+        {/* Table - only this section scrolls horizontally */}
+        <div className="w-full min-w-0">
+          <OrderTable
+            orders={filteredOrders}
+            isAdmin={isAdmin}
+            onEdit={handleEditOrder}
+            onDelete={(order) => setDeletingOrder(order)}
+            currentPage={currentPage}
+            perPage={perPage}
+          />
+        </div>
 
         {/* Pagination */}
         <OrderPagination
