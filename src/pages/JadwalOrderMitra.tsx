@@ -37,10 +37,24 @@ export default function JadwalOrderMitra() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
+  const [monthFilter, setMonthFilter] = useState('all');
+  const [yearFilter, setYearFilter] = useState('all');
 
   useEffect(() => {
     fetchOrders(currentPage, perPage);
   }, [currentPage, perPage, fetchOrders]);
+
+  // Calculate available years from orders
+  const availableYears = useMemo(() => {
+    const years = new Set<number>();
+    orders.forEach((order) => {
+      if (order.tanggalStart) {
+        const year = new Date(order.tanggalStart).getFullYear();
+        years.add(year);
+      }
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  }, [orders]);
 
   // Filter orders based on search and filters
   const filteredOrders = useMemo(() => {
@@ -53,9 +67,18 @@ export default function JadwalOrderMitra() {
       const matchesStatus = statusFilter === 'all' || order.statusPengerjaan === statusFilter;
       const matchesPayment = paymentFilter === 'all' || order.statusPembayaran === paymentFilter;
 
-      return matchesSearch && matchesStatus && matchesPayment;
+      // Month & Year filtering based on tanggalStart
+      let matchesMonth = true;
+      let matchesYear = true;
+      if (order.tanggalStart) {
+        const orderDate = new Date(order.tanggalStart);
+        matchesMonth = monthFilter === 'all' || (orderDate.getMonth() + 1) === parseInt(monthFilter);
+        matchesYear = yearFilter === 'all' || orderDate.getFullYear() === parseInt(yearFilter);
+      }
+
+      return matchesSearch && matchesStatus && matchesPayment && matchesMonth && matchesYear;
     });
-  }, [orders, searchTerm, statusFilter, paymentFilter]);
+  }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter]);
 
   const handleAddOrder = () => {
     setEditingOrder(null);
@@ -147,6 +170,11 @@ export default function JadwalOrderMitra() {
             onStatusFilterChange={setStatusFilter}
             paymentFilter={paymentFilter}
             onPaymentFilterChange={setPaymentFilter}
+            monthFilter={monthFilter}
+            onMonthFilterChange={setMonthFilter}
+            yearFilter={yearFilter}
+            onYearFilterChange={setYearFilter}
+            availableYears={availableYears}
           />
         </div>
 
