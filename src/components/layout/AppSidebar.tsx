@@ -39,7 +39,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       {!collapsed && (
         <SidebarHeader className="border-b border-border p-4">
           <div className="flex items-center gap-3">

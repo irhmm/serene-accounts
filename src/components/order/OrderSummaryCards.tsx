@@ -52,17 +52,17 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-hidden">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 overflow-hidden">
       {cards.map((card) => (
         <Card key={card.title} className="bg-card shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">{card.title}</p>
-                <p className="text-xl font-bold text-foreground">{card.value}</p>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="space-y-0.5 md:space-y-1 min-w-0 flex-1">
+                <p className="text-xs md:text-sm text-muted-foreground truncate">{card.title}</p>
+                <p className="text-base md:text-xl font-bold text-foreground truncate">{card.value}</p>
               </div>
-              <div className={`h-11 w-11 rounded-full ${card.bgColor} flex items-center justify-center`}>
-                <card.icon className={`h-5 w-5 ${card.color}`} />
+              <div className={`h-9 w-9 md:h-11 md:w-11 rounded-full ${card.bgColor} flex items-center justify-center flex-shrink-0`}>
+                <card.icon className={`h-4 w-4 md:h-5 md:w-5 ${card.color}`} />
               </div>
             </div>
           </CardContent>

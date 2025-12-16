@@ -27,25 +27,25 @@ export function OrderSearchFilter({
   onPaymentFilterChange,
 }: OrderSearchFilterProps) {
   return (
-    <div className="bg-card rounded-lg border p-4 shadow-sm overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-4">
+    <div className="bg-card rounded-lg border p-3 md:p-4 shadow-sm overflow-hidden">
+      <div className="flex flex-col gap-3 md:gap-4">
         {/* Search Input */}
-        <div className="relative flex-1">
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Cari nomor order atau nama freelance..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10"
+            className="pl-10 w-full"
           />
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 flex-1 sm:flex-none">
             <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
             <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-full sm:w-[140px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -60,7 +60,7 @@ export function OrderSearchFilter({
           </div>
 
           <Select value={paymentFilter} onValueChange={onPaymentFilterChange}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue placeholder="Pembayaran" />
             </SelectTrigger>
             <SelectContent>
