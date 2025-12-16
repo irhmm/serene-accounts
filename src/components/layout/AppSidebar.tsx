@@ -34,21 +34,21 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-border p-4">
-        <div className="flex items-center gap-3">
-          <img
-            src={logo}
-            alt="Pembimbingmu"
-            className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
-          />
-          {!collapsed && (
+      {!collapsed && (
+        <SidebarHeader className="border-b border-border p-4">
+          <div className="flex items-center gap-3">
+            <img
+              src={logo}
+              alt="Pembimbingmu"
+              className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+            />
             <div className="flex flex-col">
               <span className="font-semibold text-foreground">Pembimbingmu</span>
               <span className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</span>
             </div>
-          )}
-        </div>
-      </SidebarHeader>
+          </div>
+        </SidebarHeader>
+      )}
 
       <SidebarContent>
         <SidebarGroup>
