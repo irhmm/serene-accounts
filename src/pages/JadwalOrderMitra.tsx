@@ -50,7 +50,7 @@ export default function JadwalOrderMitra() {
         order.namaPjFreelance.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.detailOrder.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || order.statusPengerjaan === statusFilter;
       const matchesPayment = paymentFilter === 'all' || order.statusPembayaran === paymentFilter;
 
       return matchesSearch && matchesStatus && matchesPayment;

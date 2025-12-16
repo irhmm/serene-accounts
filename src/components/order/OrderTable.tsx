@@ -27,8 +27,6 @@ import {
   MitraOrder,
   paymentStatusLabels,
   paymentStatusColors,
-  orderStatusLabels,
-  orderStatusColors,
   settlementStatusLabels,
   settlementStatusColors,
   workStatusLabels,
@@ -87,7 +85,6 @@ export function OrderTable({
               <TableHead className="min-w-[180px] font-semibold">Detail</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[130px] font-semibold">PJ Freelance</TableHead>
-              <TableHead className="min-w-[90px] font-semibold">Status</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Pengerjaan</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Tgl Start</TableHead>
               <TableHead className="min-w-[110px] font-semibold">Pembayaran</TableHead>
@@ -129,11 +126,6 @@ export function OrderTable({
                   </Badge>
                 </TableCell>
                 <TableCell className="font-medium">{order.namaPjFreelance}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={orderStatusColors[order.status]}>
-                    {orderStatusLabels[order.status]}
-                  </Badge>
-                </TableCell>
                 <TableCell>
                   <Badge variant="outline" className={workStatusColors[order.statusPengerjaan] || workStatusColors.not_started}>
                     {workStatusLabels[order.statusPengerjaan] || workStatusLabels.not_started}

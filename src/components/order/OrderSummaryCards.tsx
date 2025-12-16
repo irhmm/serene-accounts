@@ -16,7 +16,7 @@ const formatCurrency = (amount: number) => {
 };
 
 export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps) {
-  const ordersInProgress = orders.filter((o) => o.status === 'proses').length;
+  const ordersInProgress = orders.filter((o) => o.statusPengerjaan === 'on_progress').length;
   const totalPendapatan = orders.reduce((sum, o) => sum + o.totalPembayaran, 0);
   const totalFeeMitra = orders.reduce((sum, o) => sum + o.feeFreelance, 0);
 

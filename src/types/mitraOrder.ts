@@ -66,7 +66,6 @@ export interface MitraOrder {
   totalPembayaran: number;
   feeFreelance: number;
   tanggalEnd: Date | null;
-  status: OrderStatus;
   statusPengerjaan: WorkStatus;
   statusPelunasan: SettlementStatus;
   catatanAdmin: string | null;
