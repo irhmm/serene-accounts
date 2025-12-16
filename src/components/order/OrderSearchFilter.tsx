@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { orderStatusLabels, paymentStatusLabels } from '@/types/mitraOrder';
+import { workStatusLabels, paymentStatusLabels } from '@/types/mitraOrder';
 
 interface OrderSearchFilterProps {
   searchTerm: string;
@@ -45,12 +45,12 @@ export function OrderSearchFilter({
           <div className="flex items-center gap-2 flex-1 sm:flex-none">
             <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
             <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-              <SelectTrigger className="w-full sm:w-[140px]">
-                <SelectValue placeholder="Status" />
+              <SelectTrigger className="w-full sm:w-[160px]">
+                <SelectValue placeholder="Pengerjaan" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Status</SelectItem>
-                {Object.entries(orderStatusLabels).map(([value, label]) => (
+                <SelectItem value="all">Semua Pengerjaan</SelectItem>
+                {Object.entries(workStatusLabels).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>

@@ -29,12 +29,10 @@ import {
   MitraOrder,
   PredefinedOrderType,
   PaymentStatus,
-  OrderStatus,
   SettlementStatus,
   WorkStatus,
   orderTypeLabels,
   paymentStatusLabels,
-  orderStatusLabels,
   settlementStatusLabels,
   workStatusLabels,
   isPredefinedOrderType,
@@ -78,7 +76,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const [totalPembayaran, setTotalPembayaran] = useState(0);
   const [feeFreelance, setFeeFreelance] = useState(0);
   const [tanggalEnd, setTanggalEnd] = useState<Date | undefined>(undefined);
-  const [status, setStatus] = useState<OrderStatus>('pending');
   const [statusPengerjaan, setStatusPengerjaan] = useState<WorkStatus>('not_started');
   const [statusPelunasan, setStatusPelunasan] = useState<SettlementStatus>('belum_lunas');
   const [catatanAdmin, setCatatanAdmin] = useState('');
@@ -108,7 +105,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       setTotalPembayaran(initialData.totalPembayaran);
       setFeeFreelance(initialData.feeFreelance);
       setTanggalEnd(initialData.tanggalEnd || undefined);
-      setStatus(initialData.status);
       setStatusPengerjaan(initialData.statusPengerjaan || 'not_started');
       setStatusPelunasan(initialData.statusPelunasan);
       setCatatanAdmin(initialData.catatanAdmin || '');
@@ -130,7 +126,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
     setTotalPembayaran(0);
     setFeeFreelance(0);
     setTanggalEnd(undefined);
-    setStatus('pending');
     setStatusPengerjaan('not_started');
     setStatusPelunasan('belum_lunas');
     setCatatanAdmin('');
@@ -152,7 +147,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       totalPembayaran,
       feeFreelance,
       tanggalEnd: tanggalEnd || null,
-      status,
       statusPengerjaan,
       statusPelunasan,
       catatanAdmin: catatanAdmin || null,
