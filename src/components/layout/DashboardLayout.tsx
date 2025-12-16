@@ -24,9 +24,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="h-14 border-b border-border flex items-center justify-between px-2 sm:px-4 bg-background">
+          <header className="h-14 border-b border-border flex items-center justify-between px-2 sm:px-4 bg-background sticky top-0 z-50">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="h-9 w-9 flex items-center justify-center" />
+              <SidebarTrigger className="h-10 w-10 md:h-9 md:w-9 flex items-center justify-center touch-manipulation" />
             </div>
             
             <div className="flex items-center gap-3">
