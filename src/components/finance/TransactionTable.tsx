@@ -97,7 +97,7 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
               <TableHead className="font-semibold">Tanggal</TableHead>
-              <TableHead className="font-semibold">Detail</TableHead>
+              <TableHead className="font-semibold">Detail Transaksi</TableHead>
               <TableHead className="font-semibold">Tipe</TableHead>
               <TableHead className="font-semibold text-right">Jumlah Masuk (RP)</TableHead>
               <TableHead className="font-semibold text-right">Jumlah Keluar (RP)</TableHead>
