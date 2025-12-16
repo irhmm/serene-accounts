@@ -77,6 +77,39 @@ export type Database = {
         }
         Relationships: []
       }
+      workers: {
+        Row: {
+          created_at: string | null
+          id: string
+          nama: string
+          nomor_wa: string
+          rekening: string | null
+          role: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nama: string
+          nomor_wa: string
+          rekening?: string | null
+          role?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nama?: string
+          nomor_wa?: string
+          rekening?: string | null
+          role?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
