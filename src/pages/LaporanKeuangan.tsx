@@ -51,7 +51,8 @@ const formatTooltipValue = (value: number) => {
 
 export default function LaporanKeuangan() {
   const { transactions, loading } = useTransactions();
-  const [yearFilter, setYearFilter] = useState<number | "all">("all");
+  const currentYear = new Date().getFullYear();
+  const [yearFilter, setYearFilter] = useState<number | "all">(currentYear);
 
   // Get available years from transactions
   const availableYears = useMemo(() => {
