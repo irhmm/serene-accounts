@@ -181,9 +181,9 @@ const Index = () => {
 
   return (
     <DashboardLayout>
-      <div className="container py-6 space-y-6">
+      <div className="container px-3 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6">
         {/* Summary Cards */}
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
           <SummaryCard
             title="Total Pemasukan"
             value={formatCurrency(totals.totalIn)}

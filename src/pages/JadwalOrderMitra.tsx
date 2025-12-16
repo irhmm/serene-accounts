@@ -118,12 +118,12 @@ export default function JadwalOrderMitra() {
 
   return (
     <DashboardLayout>
-      <div className="container py-6 space-y-6">
+      <div className="container px-3 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Jadwal Order Mitra</h1>
-            <p className="text-muted-foreground">Kelola jadwal order dan freelance</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Jadwal Order Mitra</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Kelola jadwal order dan freelance</p>
           </div>
           {isAdmin && (
             <Button onClick={handleAddOrder} className="bg-primary hover:bg-primary/90">
