@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import logo from '@/assets/logo.jpg';
+import logo from '@/assets/logo-white.png';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -68,7 +68,9 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <img src={logo} alt="Pembimbingmu Logo" className="mx-auto mb-4 h-20 w-20 rounded-lg object-cover" />
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-lg bg-[#7fb19e]">
+            <img src={logo} alt="Pembimbingmu Logo" className="h-14 w-14 object-contain" />
+          </div>
           <CardTitle className="text-2xl">Pembimbingmu</CardTitle>
           <CardDescription>Masuk untuk mengelola keuangan Anda</CardDescription>
         </CardHeader>
