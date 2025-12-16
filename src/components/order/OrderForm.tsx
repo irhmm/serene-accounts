@@ -65,7 +65,7 @@ function SectionHeader({ icon, title }: SectionHeaderProps) {
 export function OrderForm({ open, onClose, onSubmit, initialData, workers }: OrderFormProps) {
   const [nomorOrder, setNomorOrder] = useState('');
   const [detailOrder, setDetailOrder] = useState('');
-  const [typeOrder, setTypeOrder] = useState<OrderType>('jasa_tugas');
+  const [typeOrder, setTypeOrder] = useState<OrderType>('lainnya');
   const [namaPjFreelance, setNamaPjFreelance] = useState('');
   const [catatan, setCatatan] = useState('');
   const [tanggalStart, setTanggalStart] = useState<Date>(new Date());
@@ -105,7 +105,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const resetForm = () => {
     setNomorOrder('');
     setDetailOrder('');
-    setTypeOrder('jasa_tugas');
+    setTypeOrder('lainnya');
     setNamaPjFreelance('');
     setCatatan('');
     setTanggalStart(new Date());
