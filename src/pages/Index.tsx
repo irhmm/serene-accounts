@@ -20,7 +20,9 @@ import {
   Wallet,
   LogIn,
   LogOut,
-  Loader2
+  Loader2,
+  Users,
+  FileText
 } from "lucide-react";
 import logo from "@/assets/logo.jpg";
 
@@ -113,6 +115,20 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Navigation */}
+            <nav className="hidden sm:flex items-center gap-1 mr-2">
+              <Button variant="ghost" size="sm" className="gap-2 bg-muted">
+                <FileText className="h-4 w-4" />
+                Transaksi
+              </Button>
+              <Link to="/workers">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Users className="h-4 w-4" />
+                  Data Worker
+                </Button>
+              </Link>
+            </nav>
+            
             {isAdmin && (
               <Button onClick={() => setIsFormOpen(true)} className="btn-primary-gradient gap-2">
                 <Plus className="h-4 w-4" />
