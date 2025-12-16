@@ -1,4 +1,5 @@
 import { ClipboardList, Clock, Wallet, Users } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { MitraOrder } from '@/types/mitraOrder';
 
 interface OrderSummaryCardsProps {
@@ -11,7 +12,6 @@ const formatCurrency = (amount: number) => {
     style: 'currency',
     currency: 'IDR',
     minimumFractionDigits: 0,
-    notation: 'compact',
   }).format(amount);
 };
 
@@ -20,30 +20,30 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
   const totalPendapatan = orders.reduce((sum, o) => sum + o.totalPembayaran, 0);
   const totalFeeMitra = orders.reduce((sum, o) => sum + o.feeFreelance, 0);
 
-  const stats = [
+  const cards = [
     {
-      label: 'Total Orders',
+      title: 'Total Orders',
       value: totalCount.toString(),
       icon: ClipboardList,
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
     {
-      label: 'Proses',
+      title: 'Orders Proses',
       value: ordersInProgress.toString(),
       icon: Clock,
       color: 'text-amber-600',
       bgColor: 'bg-amber-100',
     },
     {
-      label: 'Pendapatan',
+      title: 'Total Pendapatan',
       value: formatCurrency(totalPendapatan),
       icon: Wallet,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-100',
     },
     {
-      label: 'Fee Mitra',
+      title: 'Total Fee Mitra',
       value: formatCurrency(totalFeeMitra),
       icon: Users,
       color: 'text-blue-600',
@@ -52,18 +52,21 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
   ];
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border shadow-sm"
-        >
-          <div className={`h-6 w-6 rounded-full ${stat.bgColor} flex items-center justify-center`}>
-            <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
-          </div>
-          <span className="text-xs text-muted-foreground">{stat.label}:</span>
-          <span className="text-sm font-semibold text-foreground">{stat.value}</span>
-        </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-hidden">
+      {cards.map((card) => (
+        <Card key={card.title} className="bg-card shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">{card.title}</p>
+                <p className="text-xl font-bold text-foreground">{card.value}</p>
+              </div>
+              <div className={`h-11 w-11 rounded-full ${card.bgColor} flex items-center justify-center`}>
+                <card.icon className={`h-5 w-5 ${card.color}`} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

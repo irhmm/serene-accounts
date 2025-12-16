@@ -1,6 +1,5 @@
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -17,8 +16,6 @@ interface OrderSearchFilterProps {
   onStatusFilterChange: (value: string) => void;
   paymentFilter: string;
   onPaymentFilterChange: (value: string) => void;
-  showAddButton?: boolean;
-  onAddClick?: () => void;
 }
 
 export function OrderSearchFilter({
@@ -28,12 +25,10 @@ export function OrderSearchFilter({
   onStatusFilterChange,
   paymentFilter,
   onPaymentFilterChange,
-  showAddButton = false,
-  onAddClick,
 }: OrderSearchFilterProps) {
   return (
-    <div className="bg-card rounded-lg border p-3 shadow-sm overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+    <div className="bg-card rounded-lg border p-4 shadow-sm overflow-hidden">
+      <div className="flex flex-col md:flex-row gap-4">
         {/* Search Input */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -41,16 +36,16 @@ export function OrderSearchFilter({
             placeholder="Cari nomor order atau nama freelance..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 h-9"
+            className="pl-10"
           />
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
             <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-              <SelectTrigger className="w-[130px] h-9">
+              <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -65,7 +60,7 @@ export function OrderSearchFilter({
           </div>
 
           <Select value={paymentFilter} onValueChange={onPaymentFilterChange}>
-            <SelectTrigger className="w-[140px] h-9">
+            <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Pembayaran" />
             </SelectTrigger>
             <SelectContent>
@@ -77,13 +72,6 @@ export function OrderSearchFilter({
               ))}
             </SelectContent>
           </Select>
-
-          {showAddButton && onAddClick && (
-            <Button onClick={onAddClick} size="sm" className="bg-primary hover:bg-primary/90 h-9">
-              <Plus className="h-4 w-4 mr-1" />
-              Tambah
-            </Button>
-          )}
         </div>
       </div>
     </div>
