@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      mitra_orders: {
+        Row: {
+          catatan: string | null
+          catatan_admin: string | null
+          created_at: string | null
+          detail_order: string
+          fee_freelance: number
+          id: string
+          kekurangan: number
+          nama_pj_freelance: string
+          nomor_order: string
+          status: string
+          status_pelunasan: string
+          status_pembayaran: string
+          tanggal_end: string | null
+          tanggal_start: string
+          total_dp: number
+          total_pembayaran: number
+          type_order: string
+          updated_at: string | null
+        }
+        Insert: {
+          catatan?: string | null
+          catatan_admin?: string | null
+          created_at?: string | null
+          detail_order: string
+          fee_freelance?: number
+          id?: string
+          kekurangan?: number
+          nama_pj_freelance: string
+          nomor_order: string
+          status?: string
+          status_pelunasan?: string
+          status_pembayaran?: string
+          tanggal_end?: string | null
+          tanggal_start?: string
+          total_dp?: number
+          total_pembayaran?: number
+          type_order?: string
+          updated_at?: string | null
+        }
+        Update: {
+          catatan?: string | null
+          catatan_admin?: string | null
+          created_at?: string | null
+          detail_order?: string
+          fee_freelance?: number
+          id?: string
+          kekurangan?: number
+          nama_pj_freelance?: string
+          nomor_order?: string
+          status?: string
+          status_pelunasan?: string
+          status_pembayaran?: string
+          tanggal_end?: string | null
+          tanggal_start?: string
+          total_dp?: number
+          total_pembayaran?: number
+          type_order?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           catatan: string | null

@@ -1,4 +1,4 @@
-import { FileText, Users } from "lucide-react";
+import { FileText, Users, Calendar } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import logo from "@/assets/logo.jpg";
@@ -18,6 +18,7 @@ import {
 const menuItems = [
   { title: "Transaksi", url: "/", icon: FileText },
   { title: "Data Worker", url: "/workers", icon: Users },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar },
 ];
 
 export function AppSidebar() {
