@@ -25,14 +25,16 @@ import {
 } from '@/components/ui/tooltip';
 import {
   MitraOrder,
-  orderTypeLabels,
-  orderTypeColors,
   paymentStatusLabels,
   paymentStatusColors,
   orderStatusLabels,
   orderStatusColors,
   settlementStatusLabels,
   settlementStatusColors,
+  workStatusLabels,
+  workStatusColors,
+  getOrderTypeLabel,
+  getOrderTypeColor,
 } from '@/types/mitraOrder';
 
 interface OrderTableProps {
@@ -86,6 +88,7 @@ export function OrderTable({
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[130px] font-semibold">PJ Freelance</TableHead>
               <TableHead className="min-w-[90px] font-semibold">Status</TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Pengerjaan</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Tgl Start</TableHead>
               <TableHead className="min-w-[110px] font-semibold">Pembayaran</TableHead>
               <TableHead className="min-w-[110px] text-right font-semibold">Total DP</TableHead>
@@ -121,14 +124,19 @@ export function OrderTable({
                   </TooltipProvider>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className={orderTypeColors[order.typeOrder]}>
-                    {orderTypeLabels[order.typeOrder]}
+                  <Badge variant="outline" className={getOrderTypeColor(order.typeOrder)}>
+                    {getOrderTypeLabel(order.typeOrder)}
                   </Badge>
                 </TableCell>
                 <TableCell className="font-medium">{order.namaPjFreelance}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className={orderStatusColors[order.status]}>
                     {orderStatusLabels[order.status]}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={workStatusColors[order.statusPengerjaan] || workStatusColors.not_started}>
+                    {workStatusLabels[order.statusPengerjaan] || workStatusLabels.not_started}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">

@@ -28,6 +28,7 @@ export type Database = {
           status: string
           status_pelunasan: string
           status_pembayaran: string
+          status_pengerjaan: string
           tanggal_end: string | null
           tanggal_start: string
           total_dp: number
@@ -48,6 +49,7 @@ export type Database = {
           status?: string
           status_pelunasan?: string
           status_pembayaran?: string
+          status_pengerjaan?: string
           tanggal_end?: string | null
           tanggal_start?: string
           total_dp?: number
@@ -68,6 +70,7 @@ export type Database = {
           status?: string
           status_pelunasan?: string
           status_pembayaran?: string
+          status_pengerjaan?: string
           tanggal_end?: string | null
           tanggal_start?: string
           total_dp?: number

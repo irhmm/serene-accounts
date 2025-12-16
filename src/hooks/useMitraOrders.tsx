@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { MitraOrder, OrderType, PaymentStatus, OrderStatus, SettlementStatus } from '@/types/mitraOrder';
+import { MitraOrder, OrderType, PaymentStatus, OrderStatus, SettlementStatus, WorkStatus } from '@/types/mitraOrder';
 import { toast } from 'sonner';
 
 export const useMitraOrders = () => {
@@ -45,10 +45,11 @@ export const useMitraOrders = () => {
         feeFreelance: order.fee_freelance,
         tanggalEnd: order.tanggal_end ? new Date(order.tanggal_end) : null,
         status: order.status as OrderStatus,
+        statusPengerjaan: (order as any).status_pengerjaan as WorkStatus || 'not_started',
         statusPelunasan: order.status_pelunasan as SettlementStatus,
         catatanAdmin: order.catatan_admin,
-        createdAt: new Date(order.created_at),
-        updatedAt: new Date(order.updated_at),
+        createdAt: new Date(order.created_at!),
+        updatedAt: new Date(order.updated_at!),
       }));
 
       setOrders(mappedOrders);
@@ -76,9 +77,10 @@ export const useMitraOrders = () => {
         fee_freelance: order.feeFreelance,
         tanggal_end: order.tanggalEnd ? order.tanggalEnd.toISOString().split('T')[0] : null,
         status: order.status,
+        status_pengerjaan: order.statusPengerjaan,
         status_pelunasan: order.statusPelunasan,
         catatan_admin: order.catatanAdmin,
-      });
+      } as any);
 
       if (error) throw error;
       toast.success('Order berhasil ditambahkan');
@@ -108,9 +110,10 @@ export const useMitraOrders = () => {
           fee_freelance: order.feeFreelance,
           tanggal_end: order.tanggalEnd ? order.tanggalEnd.toISOString().split('T')[0] : null,
           status: order.status,
+          status_pengerjaan: order.statusPengerjaan,
           status_pelunasan: order.statusPelunasan,
           catatan_admin: order.catatanAdmin,
-        })
+        } as any)
         .eq('id', id);
 
       if (error) throw error;

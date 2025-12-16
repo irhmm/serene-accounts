@@ -1,4 +1,5 @@
-export type OrderType = 
+// Predefined order types
+export type PredefinedOrderType = 
   | 'paket_sempro' 
   | 'paket_semhas' 
   | 'paket_wisuda'
@@ -33,7 +34,19 @@ export type OrderType =
   | 'modul_ajar'
   | 'judul_tesis'
   | 'vidio_pembelajaran'
-  | 'lainnya';
+  | 'lainnya'
+  | 'custom';
+
+// OrderType can be predefined or any custom string
+export type OrderType = PredefinedOrderType | string;
+
+// Work status type
+export type WorkStatus = 'not_started' | 'on_progress' | 'done';
+
+// Helper to check if type is predefined
+export const isPredefinedOrderType = (type: string): type is PredefinedOrderType => {
+  return type in orderTypeLabels;
+};
 
 export type PaymentStatus = 'belum_bayar' | 'dp' | 'lunas';
 export type OrderStatus = 'pending' | 'proses' | 'selesai' | 'cancel';
@@ -54,13 +67,14 @@ export interface MitraOrder {
   feeFreelance: number;
   tanggalEnd: Date | null;
   status: OrderStatus;
+  statusPengerjaan: WorkStatus;
   statusPelunasan: SettlementStatus;
   catatanAdmin: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export const orderTypeLabels: Record<OrderType, string> = {
+export const orderTypeLabels: Record<PredefinedOrderType, string> = {
   paket_sempro: 'PAKET SEMPRO',
   paket_semhas: 'PAKET SEMHAS',
   paket_wisuda: 'PAKET WISUDA',
@@ -96,9 +110,10 @@ export const orderTypeLabels: Record<OrderType, string> = {
   judul_tesis: 'Judul Tesis',
   vidio_pembelajaran: 'Vidio Pembelajaran',
   lainnya: 'Lainnya',
+  custom: 'Ketik Sendiri',
 };
 
-export const orderTypeColors: Record<OrderType, string> = {
+export const orderTypeColors: Record<PredefinedOrderType, string> = {
   paket_sempro: 'bg-red-100 text-red-700 border-red-300',
   paket_semhas: 'bg-red-100 text-red-700 border-red-300',
   paket_wisuda: 'bg-red-100 text-red-700 border-red-300',
@@ -134,6 +149,29 @@ export const orderTypeColors: Record<OrderType, string> = {
   judul_tesis: 'bg-purple-100 text-purple-700 border-purple-300',
   vidio_pembelajaran: 'bg-gray-100 text-gray-700 border-gray-300',
   lainnya: 'bg-gray-100 text-gray-700 border-gray-300',
+  custom: 'bg-teal-100 text-teal-700 border-teal-300',
+};
+
+// Helper functions for custom types
+export const getOrderTypeLabel = (type: string): string => {
+  return orderTypeLabels[type as PredefinedOrderType] || type;
+};
+
+export const getOrderTypeColor = (type: string): string => {
+  return orderTypeColors[type as PredefinedOrderType] || 'bg-gray-100 text-gray-700 border-gray-300';
+};
+
+// Work Status labels and colors
+export const workStatusLabels: Record<WorkStatus, string> = {
+  not_started: 'Not Started',
+  on_progress: 'On Progress',
+  done: 'Done',
+};
+
+export const workStatusColors: Record<WorkStatus, string> = {
+  not_started: 'bg-red-100 text-red-700 border-red-300',
+  on_progress: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+  done: 'bg-green-100 text-green-700 border-green-300',
 };
 
 export const paymentStatusLabels: Record<PaymentStatus, string> = {
