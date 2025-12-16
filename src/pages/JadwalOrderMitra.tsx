@@ -107,8 +107,10 @@ export default function JadwalOrderMitra() {
   if (loading && orders.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="container py-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -116,7 +118,7 @@ export default function JadwalOrderMitra() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="container py-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
