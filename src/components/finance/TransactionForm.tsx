@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,6 +67,18 @@ export function TransactionForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    if (!detail.trim()) {
+      toast.error('Detail transaksi tidak boleh kosong');
+      return;
+    }
+    
+    if (!freelanceCategory) {
+      toast.error('Silakan pilih worker atau kategori freelance');
+      return;
+    }
+    
     onSubmit({
       date,
       detail,
