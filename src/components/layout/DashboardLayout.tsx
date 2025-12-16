@@ -19,10 +19,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background overflow-hidden">
         <AppSidebar />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <header className="h-14 border-b border-border flex items-center justify-between px-2 sm:px-4 bg-background sticky top-0 z-50">
             <div className="flex items-center gap-2">

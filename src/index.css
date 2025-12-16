@@ -91,6 +91,11 @@
     @apply border-border;
   }
 
+  html, body, #root {
+    @apply overflow-x-hidden;
+    position: relative;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
