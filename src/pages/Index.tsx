@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SummaryCard } from "@/components/finance/SummaryCard";
 import { TransactionForm } from "@/components/finance/TransactionForm";
@@ -7,6 +6,7 @@ import { TransactionTable } from "@/components/finance/TransactionTable";
 import { SearchFilter } from "@/components/finance/SearchFilter";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAuth } from "@/hooks/useAuth";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { 
   Transaction, 
   TransactionType, 
@@ -18,13 +18,8 @@ import {
   TrendingDown, 
   PiggyBank,
   Wallet,
-  LogIn,
-  LogOut,
-  Loader2,
-  Users,
-  FileText
+  Loader2
 } from "lucide-react";
-import logo from "@/assets/logo.jpg";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -37,7 +32,7 @@ const formatCurrency = (amount: number) => {
 
 const Index = () => {
   const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
-  const { user, isAdmin, signOut } = useAuth();
+  const { isAdmin } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,59 +98,8 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Pembimbingmu Logo" className="h-12 w-12 rounded-lg object-cover" />
-            <div>
-              <h1 className="text-lg font-bold leading-none">Pembimbingmu</h1>
-              <p className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Navigation */}
-            <nav className="hidden sm:flex items-center gap-1 mr-2">
-              <Button variant="ghost" size="sm" className="gap-2 bg-muted">
-                <FileText className="h-4 w-4" />
-                Transaksi
-              </Button>
-              <Link to="/workers">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Users className="h-4 w-4" />
-                  Data Worker
-                </Button>
-              </Link>
-            </nav>
-            
-            {isAdmin && (
-              <Button onClick={() => setIsFormOpen(true)} className="btn-primary-gradient gap-2">
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Tambah Transaksi</span>
-                <span className="sm:hidden">Tambah</span>
-              </Button>
-            )}
-            {user ? (
-              <Button variant="outline" onClick={signOut} className="gap-2">
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Keluar</span>
-              </Button>
-            ) : (
-              <Button variant="outline" asChild className="gap-2">
-                <Link to="/auth">
-                  <LogIn className="h-4 w-4" />
-                  <span className="hidden sm:inline">Masuk Admin</span>
-                  <span className="sm:hidden">Masuk</span>
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container py-6 space-y-6">
+    <DashboardLayout>
+      <div className="container py-6 space-y-6">
         {/* Summary Cards */}
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <SummaryCard
@@ -195,6 +139,13 @@ const Index = () => {
                 {filteredTransactions.length} dari {transactions.length} transaksi
               </p>
             </div>
+            {isAdmin && (
+              <Button onClick={() => setIsFormOpen(true)} className="btn-primary-gradient gap-2">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">Tambah Transaksi</span>
+                <span className="sm:hidden">Tambah</span>
+              </Button>
+            )}
           </div>
           <SearchFilter
             searchQuery={searchQuery}
@@ -215,7 +166,7 @@ const Index = () => {
             isAdmin={isAdmin}
           />
         </section>
-      </main>
+      </div>
 
       {/* Transaction Form Modal */}
       {isAdmin && (
@@ -226,7 +177,7 @@ const Index = () => {
           editTransaction={editingTransaction}
         />
       )}
-    </div>
+    </DashboardLayout>
   );
 };
 
