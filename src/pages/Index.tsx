@@ -14,14 +14,15 @@ import {
 } from "@/types/transaction";
 import { 
   Plus, 
-  Wallet, 
   TrendingUp, 
   TrendingDown, 
   PiggyBank,
+  Wallet,
   LogIn,
   LogOut,
   Loader2
 } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -105,12 +106,10 @@ const Index = () => {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Wallet className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img src={logo} alt="Pembimbingmu Logo" className="h-10 w-10 rounded-lg object-cover" />
             <div>
-              <h1 className="text-lg font-bold leading-none">FinanceTrack</h1>
-              <p className="text-xs text-muted-foreground">Pendataan Keuangan</p>
+              <h1 className="text-lg font-bold leading-none">Pembimbingmu</h1>
+              <p className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
