@@ -31,10 +31,11 @@ import {
   ExpenseStatus,
   transactionTypeLabels,
   transactionTypeColors,
-  freelanceCategoryLabels,
   expenseStatusLabels,
   expenseStatusColors,
 } from "@/types/transaction";
+import { useWorkers } from "@/hooks/useWorkers";
+import { workerRoleLabels } from "@/types/worker";
 
 interface TransactionFormProps {
   open: boolean;
@@ -49,13 +50,14 @@ export function TransactionForm({
   onSubmit, 
   editTransaction 
 }: TransactionFormProps) {
+  const { workers } = useWorkers();
   const [date, setDate] = useState<Date>(editTransaction?.date || new Date());
   const [detail, setDetail] = useState(editTransaction?.detail || "");
   const [type, setType] = useState<TransactionType>(editTransaction?.type || "pemasukan_dp");
   const [amountIn, setAmountIn] = useState(editTransaction?.amountIn?.toString() || "");
   const [amountOut, setAmountOut] = useState(editTransaction?.amountOut?.toString() || "");
   const [freelanceCategory, setFreelanceCategory] = useState<FreelanceCategory>(
-    editTransaction?.freelanceCategory || "other"
+    editTransaction?.freelanceCategory || ""
   );
   const [expenseStatus, setExpenseStatus] = useState<ExpenseStatus>(
     editTransaction?.expenseStatus || "pending"
@@ -85,7 +87,7 @@ export function TransactionForm({
     
     setAmountIn("");
     setAmountOut("");
-    setFreelanceCategory("other");
+    setFreelanceCategory("");
     setExpenseStatus("pending");
     setNotes("");
   };
@@ -197,22 +199,23 @@ export function TransactionForm({
               </div>
             </div>
 
-            {/* Freelance Category */}
+            {/* Freelance Category - Worker Selection */}
             <div className="space-y-2">
               <Label htmlFor="freelanceCategory">Keterangan Freelance</Label>
               <Select 
                 value={freelanceCategory} 
-                onValueChange={(v) => setFreelanceCategory(v as FreelanceCategory)}
+                onValueChange={(v) => setFreelanceCategory(v)}
               >
                 <SelectTrigger className="input-focus">
-                  <SelectValue placeholder="Pilih kategori" />
+                  <SelectValue placeholder="Pilih worker" />
                 </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  {Object.entries(freelanceCategoryLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
+                <SelectContent className="bg-popover max-h-[200px]">
+                  {workers.filter(w => w.status === 'active').map((worker) => (
+                    <SelectItem key={worker.id} value={worker.nama}>
+                      {worker.nama} - {workerRoleLabels[worker.role]}
                     </SelectItem>
                   ))}
+                  <SelectItem value="other">Lainnya</SelectItem>
                 </SelectContent>
               </Select>
             </div>
