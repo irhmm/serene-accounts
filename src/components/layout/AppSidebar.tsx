@@ -1,6 +1,7 @@
 import { FileText, Users, Calendar } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.jpg";
 
 import {
@@ -16,15 +17,19 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { title: "Transaksi", url: "/", icon: FileText },
-  { title: "Data Worker", url: "/workers", icon: Users },
-  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar },
+  { title: "Transaksi", url: "/", icon: FileText, adminOnly: false },
+  { title: "Data Worker", url: "/workers", icon: Users, adminOnly: true },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { isAdmin } = useAuth();
   const collapsed = state === "collapsed";
+
+  // Filter menu items based on user role
+  const visibleMenuItems = menuItems.filter(item => !item.adminOnly || isAdmin);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -55,7 +60,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {visibleMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild

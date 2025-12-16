@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WorkerTable } from '@/components/worker/WorkerTable';
@@ -11,7 +12,16 @@ import { toast } from 'sonner';
 
 const DataWorker = () => {
   const { workers, loading, addWorker, updateWorker, deleteWorker } = useWorkers();
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      toast.error('Anda tidak memiliki akses ke halaman ini');
+      navigate('/');
+    }
+  }, [isAdmin, authLoading, navigate]);
   
   const [showForm, setShowForm] = useState(false);
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
