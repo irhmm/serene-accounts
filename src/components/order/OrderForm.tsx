@@ -251,21 +251,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Status Order</Label>
-                  <Select value={status} onValueChange={(v) => setStatus(v as OrderStatus)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(orderStatusLabels).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
                   <Label>Status Pengerjaan</Label>
                   <Select value={statusPengerjaan} onValueChange={(v) => setStatusPengerjaan(v as WorkStatus)}>
                     <SelectTrigger>
