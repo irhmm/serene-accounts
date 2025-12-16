@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,18 +52,40 @@ export function TransactionForm({
   editTransaction 
 }: TransactionFormProps) {
   const { workers } = useWorkers();
-  const [date, setDate] = useState<Date>(editTransaction?.date || new Date());
-  const [detail, setDetail] = useState(editTransaction?.detail || "");
-  const [type, setType] = useState<TransactionType>(editTransaction?.type || "pemasukan_dp");
-  const [amountIn, setAmountIn] = useState(editTransaction?.amountIn?.toString() || "");
-  const [amountOut, setAmountOut] = useState(editTransaction?.amountOut?.toString() || "");
-  const [freelanceCategory, setFreelanceCategory] = useState<FreelanceCategory>(
-    editTransaction?.freelanceCategory || ""
-  );
-  const [expenseStatus, setExpenseStatus] = useState<ExpenseStatus>(
-    editTransaction?.expenseStatus || "pending"
-  );
-  const [notes, setNotes] = useState(editTransaction?.notes || "");
+  const [date, setDate] = useState<Date>(new Date());
+  const [detail, setDetail] = useState("");
+  const [type, setType] = useState<TransactionType>("pemasukan_dp");
+  const [amountIn, setAmountIn] = useState("");
+  const [amountOut, setAmountOut] = useState("");
+  const [freelanceCategory, setFreelanceCategory] = useState<FreelanceCategory>("");
+  const [expenseStatus, setExpenseStatus] = useState<ExpenseStatus>("pending");
+  const [notes, setNotes] = useState("");
+
+  // Sync form state when editTransaction changes or dialog opens
+  useEffect(() => {
+    if (open) {
+      if (editTransaction) {
+        setDate(editTransaction.date);
+        setDetail(editTransaction.detail);
+        setType(editTransaction.type);
+        setAmountIn(editTransaction.amountIn?.toString() || "");
+        setAmountOut(editTransaction.amountOut?.toString() || "");
+        setFreelanceCategory(editTransaction.freelanceCategory);
+        setExpenseStatus(editTransaction.expenseStatus);
+        setNotes(editTransaction.notes || "");
+      } else {
+        // Reset form for new transaction
+        setDate(new Date());
+        setDetail("");
+        setType("pemasukan_dp");
+        setAmountIn("");
+        setAmountOut("");
+        setFreelanceCategory("");
+        setExpenseStatus("pending");
+        setNotes("");
+      }
+    }
+  }, [open, editTransaction]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +111,6 @@ export function TransactionForm({
       expenseStatus,
       notes,
     });
-    resetForm();
     onOpenChange(false);
   };
 
