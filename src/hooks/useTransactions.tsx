@@ -56,11 +56,8 @@ export function useTransactions() {
   }, [fetchTransactions]);
 
   const addTransaction = async (transaction: Omit<Transaction, 'id' | 'balance'>) => {
-    // Calculate new balance
-    const currentBalance = transactions.length > 0 
-      ? transactions[transactions.length - 1].balance 
-      : 0;
-    const newBalance = currentBalance + transaction.amountIn - transaction.amountOut;
+    // Calculate per-row balance: amountIn - amountOut
+    const rowBalance = transaction.amountIn - transaction.amountOut;
 
     const { error } = await supabase.from('transactions').insert({
       tanggal: transaction.date.toISOString().split('T')[0],
@@ -68,7 +65,7 @@ export function useTransactions() {
       type: transaction.type,
       jumlah_masuk_dp: transaction.amountIn,
       jumlah_keluar_dp: transaction.amountOut,
-      saldo_akhir: newBalance,
+      saldo_akhir: rowBalance,
       keterangan_freelance: transaction.freelanceCategory,
       status_pengeluaran: transaction.expenseStatus,
       catatan: transaction.notes || null,

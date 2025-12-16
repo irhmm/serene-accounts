@@ -58,14 +58,6 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Calculate totals
-  const totals = useMemo(() => {
-    const totalIn = transactions.reduce((sum, t) => sum + t.amountIn, 0);
-    const totalOut = transactions.reduce((sum, t) => sum + t.amountOut, 0);
-    const balance = totalIn - totalOut;
-    return { totalIn, totalOut, balance };
-  }, [transactions]);
-
   // Get available years from transactions
   const availableYears = useMemo(() => {
     const years = new Set<number>();
@@ -92,6 +84,14 @@ const Index = () => {
       return matchesSearch && matchesType && matchesStatus && matchesMonth && matchesYear;
     });
   }, [transactions, searchQuery, typeFilter, statusFilter, monthFilter, yearFilter]);
+
+  // Calculate totals based on filtered transactions (per bulan/filter aktif)
+  const totals = useMemo(() => {
+    const totalIn = filteredTransactions.reduce((sum, t) => sum + t.amountIn, 0);
+    const totalOut = filteredTransactions.reduce((sum, t) => sum + t.amountOut, 0);
+    const balance = totalIn - totalOut;
+    return { totalIn, totalOut, balance };
+  }, [filteredTransactions]);
 
   // Pagination
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
