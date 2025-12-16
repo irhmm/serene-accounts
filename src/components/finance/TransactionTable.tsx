@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import {
   Transaction,
   transactionTypeLabels,
+  transactionTypeColors,
   freelanceCategoryLabels,
   expenseStatusLabels,
   ExpenseStatus,
@@ -60,16 +61,7 @@ const getStatusBadgeVariant = (status: ExpenseStatus) => {
 };
 
 const getTypeBadgeVariant = (type: TransactionType) => {
-  switch (type) {
-    case 'income':
-      return 'bg-primary/10 text-primary border-primary/20';
-    case 'expense':
-      return 'bg-destructive/10 text-destructive border-destructive/20';
-    case 'transfer':
-      return 'bg-secondary text-secondary-foreground border-border';
-    default:
-      return 'bg-secondary text-secondary-foreground border-border';
-  }
+  return transactionTypeColors[type] || 'bg-secondary text-secondary-foreground border-border';
 };
 
 export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = false }: TransactionTableProps) {

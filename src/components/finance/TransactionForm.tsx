@@ -30,6 +30,7 @@ import {
   FreelanceCategory,
   ExpenseStatus,
   transactionTypeLabels,
+  transactionTypeColors,
   freelanceCategoryLabels,
   expenseStatusLabels,
 } from "@/types/transaction";
@@ -49,7 +50,7 @@ export function TransactionForm({
 }: TransactionFormProps) {
   const [date, setDate] = useState<Date>(editTransaction?.date || new Date());
   const [detail, setDetail] = useState(editTransaction?.detail || "");
-  const [type, setType] = useState<TransactionType>(editTransaction?.type || "expense");
+  const [type, setType] = useState<TransactionType>(editTransaction?.type || "pemasukan_dp");
   const [amountIn, setAmountIn] = useState(editTransaction?.amountIn?.toString() || "");
   const [amountOut, setAmountOut] = useState(editTransaction?.amountOut?.toString() || "");
   const [freelanceCategory, setFreelanceCategory] = useState<FreelanceCategory>(
@@ -79,7 +80,8 @@ export function TransactionForm({
   const resetForm = () => {
     setDate(new Date());
     setDetail("");
-    setType("expense");
+    setType("pemasukan_dp");
+    
     setAmountIn("");
     setAmountOut("");
     setFreelanceCategory("other");
@@ -150,12 +152,20 @@ export function TransactionForm({
               <Label htmlFor="type">Tipe</Label>
               <Select value={type} onValueChange={(v) => setType(v as TransactionType)}>
                 <SelectTrigger className="input-focus">
-                  <SelectValue placeholder="Pilih tipe" />
+                  <SelectValue placeholder="Pilih tipe">
+                    {type && (
+                      <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium border", transactionTypeColors[type])}>
+                        {transactionTypeLabels[type]}
+                      </span>
+                    )}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-popover">
+                <SelectContent className="bg-popover max-h-[300px]">
                   {Object.entries(transactionTypeLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
+                    <SelectItem key={value} value={value} className="cursor-pointer">
+                      <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium border", transactionTypeColors[value as TransactionType])}>
+                        {label}
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
