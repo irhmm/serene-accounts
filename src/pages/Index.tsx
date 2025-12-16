@@ -22,7 +22,7 @@ import {
   LogOut,
   Loader2
 } from "lucide-react";
-import logo from "@/assets/logo-white.png";
+import logo from "@/assets/logo.jpg";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -106,9 +106,7 @@ const Index = () => {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#7fb19e]">
-              <img src={logo} alt="Pembimbingmu Logo" className="h-8 w-8 object-contain" />
-            </div>
+            <img src={logo} alt="Pembimbingmu Logo" className="h-12 w-12 rounded-lg object-cover" />
             <div>
               <h1 className="text-lg font-bold leading-none">Pembimbingmu</h1>
               <p className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</p>
