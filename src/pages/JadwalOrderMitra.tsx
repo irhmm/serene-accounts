@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Button } from '@/components/ui/button';
 import { OrderTable } from '@/components/order/OrderTable';
 import { OrderForm } from '@/components/order/OrderForm';
 import { OrderPagination } from '@/components/order/OrderPagination';
@@ -118,37 +116,27 @@ export default function JadwalOrderMitra() {
 
   return (
     <DashboardLayout>
-      <div className="container py-6 space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="container py-4 space-y-4">
+        {/* Compact Header with Summary Stats */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Jadwal Order Mitra</h1>
-            <p className="text-muted-foreground">Kelola jadwal order dan freelance</p>
+            <h1 className="text-xl font-bold text-foreground">Jadwal Order Mitra</h1>
+            <p className="text-sm text-muted-foreground">Kelola jadwal order dan freelance</p>
           </div>
-          {isAdmin && (
-            <Button onClick={handleAddOrder} className="bg-primary hover:bg-primary/90">
-              <Plus className="h-4 w-4 mr-2" />
-              Tambah Order
-            </Button>
-          )}
-        </div>
-
-        {/* Summary Cards - isolated from table scroll */}
-        <div className="overflow-hidden">
           <OrderSummaryCards orders={orders} totalCount={totalCount} />
         </div>
 
-        {/* Search & Filter - isolated from table scroll */}
-        <div className="overflow-hidden">
-          <OrderSearchFilter
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
-            paymentFilter={paymentFilter}
-            onPaymentFilterChange={setPaymentFilter}
-          />
-        </div>
+        {/* Search & Filter with Add Button */}
+        <OrderSearchFilter
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          paymentFilter={paymentFilter}
+          onPaymentFilterChange={setPaymentFilter}
+          showAddButton={isAdmin}
+          onAddClick={handleAddOrder}
+        />
 
         {/* Table - only this section scrolls horizontally */}
         <div className="w-full min-w-0">
