@@ -34,8 +34,6 @@ import {
   settlementStatusLabels,
   settlementStatusColors,
 } from '@/types/mitraOrder';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
 
 interface OrderTableProps {
   orders: MitraOrder[];
@@ -64,7 +62,7 @@ export function OrderTable({
 }: OrderTableProps) {
   if (orders.length === 0) {
     return (
-      <Card className="p-12 text-center shadow-sm">
+      <div className="rounded-lg border bg-card p-12 text-center card-shadow">
         <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-muted flex items-center justify-center">
           <ClipboardList className="h-7 w-7 text-muted-foreground" />
         </div>
@@ -72,13 +70,13 @@ export function OrderTable({
         <p className="text-sm text-muted-foreground mt-1">
           Mulai dengan menambahkan order pertama
         </p>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="shadow-sm overflow-hidden">
-      <ScrollArea className="w-full whitespace-nowrap">
+    <div className="rounded-lg border bg-card overflow-hidden card-shadow">
+      <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
@@ -184,8 +182,7 @@ export function OrderTable({
             ))}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-    </Card>
+      </div>
+    </div>
   );
 }
