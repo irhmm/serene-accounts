@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -64,6 +64,31 @@ const getTypeBadgeVariant = (type: TransactionType) => {
 };
 
 export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = false }: TransactionTableProps) {
+  // Group transactions by month/year
+  const groupedTransactions = useMemo(() => {
+    const groups: { [key: string]: Transaction[] } = {};
+    
+    transactions.forEach((t) => {
+      const date = new Date(t.date);
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(t);
+    });
+    
+    return Object.entries(groups)
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([key, items]) => ({
+        key,
+        month: parseInt(key.split('-')[1]),
+        year: parseInt(key.split('-')[0]),
+        transactions: items,
+        totalIn: items.reduce((sum, t) => sum + t.amountIn, 0),
+        totalOut: items.reduce((sum, t) => sum + t.amountOut, 0),
+      }));
+  }, [transactions]);
+
   if (transactions.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-12 text-center">
@@ -109,76 +134,103 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction, index) => (
-              <TableRow 
-                key={transaction.id} 
-                className="table-row-hover animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <TableCell className="font-medium whitespace-nowrap">
-                  {format(new Date(transaction.date), "dd MMM yyyy", { locale: id })}
-                </TableCell>
-                <TableCell className="max-w-[200px] truncate">
-                  {transaction.detail}
-                </TableCell>
-                <TableCell>
-                  <Badge 
-                    variant="outline" 
-                    className={cn("font-medium", getTypeBadgeVariant(transaction.type))}
-                  >
-                    {transactionTypeLabels[transaction.type]}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right font-medium text-primary whitespace-nowrap">
-                  {transaction.amountIn > 0 ? formatCurrency(transaction.amountIn) : '-'}
-                </TableCell>
-                <TableCell className="text-right font-medium text-destructive whitespace-nowrap">
-                  {transaction.amountOut > 0 ? formatCurrency(transaction.amountOut) : '-'}
-                </TableCell>
-                <TableCell className="text-right font-semibold whitespace-nowrap">
-                  {formatCurrency(transaction.amountIn - transaction.amountOut)}
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary" className="font-medium">
-                    {transaction.freelanceCategory || '-'}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge 
-                    variant="outline" 
-                    className={cn("font-medium", getStatusBadgeVariant(transaction.expenseStatus))}
-                  >
-                    {expenseStatusLabels[transaction.expenseStatus]}
-                  </Badge>
-                </TableCell>
-                <TableCell className="max-w-[150px] truncate text-muted-foreground">
-                  {transaction.notes || '-'}
-                </TableCell>
-                {isAdmin && (
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-popover">
-                        <DropdownMenuItem onClick={() => onEdit(transaction)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => onDelete(transaction.id)}
-                          className="text-destructive focus:text-destructive"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Hapus
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+            {groupedTransactions.map((group) => (
+              <Fragment key={group.key}>
+                {/* Month Separator Header */}
+                <TableRow className="bg-primary/10 hover:bg-primary/10 border-t-2 border-primary/30">
+                  <TableCell colSpan={isAdmin ? 10 : 9} className="py-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-primary text-base">
+                        {format(new Date(group.year, group.month - 1), "MMMM yyyy", { locale: id })}
+                      </span>
+                      <div className="flex gap-6 text-sm">
+                        <span className="text-primary font-medium">
+                          Masuk: {formatCurrency(group.totalIn)}
+                        </span>
+                        <span className="text-destructive font-medium">
+                          Keluar: {formatCurrency(group.totalOut)}
+                        </span>
+                        <span className="font-bold">
+                          Saldo: {formatCurrency(group.totalIn - group.totalOut)}
+                        </span>
+                      </div>
+                    </div>
                   </TableCell>
-                )}
-              </TableRow>
+                </TableRow>
+                
+                {/* Transactions in this month */}
+                {group.transactions.map((transaction, index) => (
+                  <TableRow 
+                    key={transaction.id} 
+                    className="table-row-hover animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <TableCell className="font-medium whitespace-nowrap">
+                      {format(new Date(transaction.date), "dd MMM yyyy", { locale: id })}
+                    </TableCell>
+                    <TableCell className="max-w-[200px] truncate">
+                      {transaction.detail}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant="outline" 
+                        className={cn("font-medium", getTypeBadgeVariant(transaction.type))}
+                      >
+                        {transactionTypeLabels[transaction.type]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-primary whitespace-nowrap">
+                      {transaction.amountIn > 0 ? formatCurrency(transaction.amountIn) : '-'}
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-destructive whitespace-nowrap">
+                      {transaction.amountOut > 0 ? formatCurrency(transaction.amountOut) : '-'}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold whitespace-nowrap">
+                      {formatCurrency(transaction.amountIn - transaction.amountOut)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="font-medium">
+                        {transaction.freelanceCategory || '-'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant="outline" 
+                        className={cn("font-medium", getStatusBadgeVariant(transaction.expenseStatus))}
+                      >
+                        {expenseStatusLabels[transaction.expenseStatus]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="max-w-[150px] truncate text-muted-foreground">
+                      {transaction.notes || '-'}
+                    </TableCell>
+                    {isAdmin && (
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-popover">
+                            <DropdownMenuItem onClick={() => onEdit(transaction)}>
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => onDelete(transaction.id)}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Hapus
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </Fragment>
             ))}
           </TableBody>
         </Table>
