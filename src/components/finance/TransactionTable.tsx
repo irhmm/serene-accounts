@@ -23,7 +23,6 @@ import {
   Transaction,
   transactionTypeLabels,
   transactionTypeColors,
-  freelanceCategoryLabels,
   expenseStatusLabels,
   ExpenseStatus,
   TransactionType,
@@ -141,7 +140,7 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className="font-medium">
-                    {freelanceCategoryLabels[transaction.freelanceCategory]}
+                    {transaction.freelanceCategory || '-'}
                   </Badge>
                 </TableCell>
                 <TableCell>

@@ -14,13 +14,8 @@ export type TransactionType =
   | 'pemasukan' 
   | 'pengeluaran_fee_franchise';
 
-export type FreelanceCategory = 
-  | 'design' 
-  | 'development' 
-  | 'writing' 
-  | 'consulting' 
-  | 'marketing' 
-  | 'other';
+// FreelanceCategory is now dynamic - stores worker name from workers table
+export type FreelanceCategory = string;
 
 export type ExpenseStatus = 
   | 'pending' 
@@ -75,14 +70,7 @@ export const transactionTypeColors: Record<TransactionType, string> = {
   pengeluaran_fee_franchise: 'bg-cyan-100 text-cyan-700 border-cyan-300',
 };
 
-export const freelanceCategoryLabels: Record<FreelanceCategory, string> = {
-  design: 'Design',
-  development: 'Development',
-  writing: 'Writing',
-  consulting: 'Consulting',
-  marketing: 'Marketing',
-  other: 'Lainnya',
-};
+// freelanceCategoryLabels is no longer used - workers are fetched dynamically
 
 export const expenseStatusLabels: Record<ExpenseStatus, string> = {
   pending: 'Pending',
