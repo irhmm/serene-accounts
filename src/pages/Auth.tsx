@@ -68,7 +68,7 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <img src={logo} alt="Pembimbingmu Logo" className="mx-auto mb-4 h-16 w-16 rounded-lg object-cover" />
+          <img src={logo} alt="Pembimbingmu Logo" className="mx-auto mb-4 h-20 w-20 rounded-lg object-cover" />
           <CardTitle className="text-2xl">Pembimbingmu</CardTitle>
           <CardDescription>Masuk untuk mengelola keuangan Anda</CardDescription>
         </CardHeader>

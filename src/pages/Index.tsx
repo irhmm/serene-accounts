@@ -106,7 +106,7 @@ const Index = () => {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Pembimbingmu Logo" className="h-10 w-10 rounded-lg object-cover" />
+            <img src={logo} alt="Pembimbingmu Logo" className="h-12 w-12 rounded-lg object-cover" />
             <div>
               <h1 className="text-lg font-bold leading-none">Pembimbingmu</h1>
               <p className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</p>
