@@ -27,7 +27,7 @@ export function OrderSearchFilter({
   onPaymentFilterChange,
 }: OrderSearchFilterProps) {
   return (
-    <div className="bg-card rounded-lg border p-4 shadow-sm">
+    <div className="bg-card rounded-lg border p-4 shadow-sm overflow-hidden">
       <div className="flex flex-col md:flex-row gap-4">
         {/* Search Input */}
         <div className="relative flex-1">
