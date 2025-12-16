@@ -17,8 +17,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
-import { Calendar } from "lucide-react";
+import { Calendar, TrendingUp, TrendingDown, Wallet } from "lucide-react";
 
 const monthNames = [
   "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
@@ -27,7 +28,8 @@ const monthNames = [
 
 interface MonthlyData {
   month: string;
-  pendapatan: number;
+  pemasukan: number;
+  pengeluaran: number;
 }
 
 const formatCurrency = (value: number) => {
@@ -64,11 +66,12 @@ export default function LaporanKeuangan() {
     return Array.from(years).sort((a, b) => b - a);
   }, [transactions]);
 
-  // Calculate monthly income data
+  // Calculate monthly income and expense data
   const monthlyData = useMemo(() => {
     const data: MonthlyData[] = monthNames.map((month) => ({
       month,
-      pendapatan: 0,
+      pemasukan: 0,
+      pengeluaran: 0,
     }));
 
     transactions.forEach((t) => {
@@ -79,16 +82,20 @@ export default function LaporanKeuangan() {
       // Filter by year if selected
       if (yearFilter !== "all" && year !== yearFilter) return;
 
-      // Add income (jumlah_masuk)
-      data[monthIndex].pendapatan += t.amountIn;
+      // Add income and expenses
+      data[monthIndex].pemasukan += t.amountIn;
+      data[monthIndex].pengeluaran += t.amountOut;
     });
 
     return data;
   }, [transactions, yearFilter]);
 
-  // Calculate total income
-  const totalIncome = useMemo(() => {
-    return monthlyData.reduce((sum, d) => sum + d.pendapatan, 0);
+  // Calculate totals
+  const totals = useMemo(() => {
+    const pemasukan = monthlyData.reduce((sum, d) => sum + d.pemasukan, 0);
+    const pengeluaran = monthlyData.reduce((sum, d) => sum + d.pengeluaran, 0);
+    const saldo = pemasukan - pengeluaran;
+    return { pemasukan, pengeluaran, saldo };
   }, [monthlyData]);
 
   return (
@@ -99,7 +106,7 @@ export default function LaporanKeuangan() {
           <div>
             <h1 className="text-2xl font-bold text-foreground">Laporan Keuangan</h1>
             <p className="text-muted-foreground text-sm">
-              Grafik pendapatan bulanan
+              Grafik pemasukan dan pengeluaran bulanan
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -125,24 +132,55 @@ export default function LaporanKeuangan() {
           </div>
         </div>
 
-        {/* Summary Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-muted-foreground">
-              Total Pendapatan {yearFilter !== "all" ? yearFilter : ""}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-primary">
-              {formatTooltipValue(totalIncome)}
-            </p>
-          </CardContent>
-        </Card>
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Pemasukan {yearFilter !== "all" ? yearFilter : ""}
+              </CardTitle>
+              <TrendingUp className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold text-primary">
+                {formatTooltipValue(totals.pemasukan)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Pengeluaran {yearFilter !== "all" ? yearFilter : ""}
+              </CardTitle>
+              <TrendingDown className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold text-destructive">
+                {formatTooltipValue(totals.pengeluaran)}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Saldo {yearFilter !== "all" ? yearFilter : ""}
+              </CardTitle>
+              <Wallet className="h-4 w-4 text-blue-500" />
+            </CardHeader>
+            <CardContent>
+              <p className={`text-2xl font-bold ${totals.saldo >= 0 ? "text-primary" : "text-destructive"}`}>
+                {formatTooltipValue(totals.saldo)}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Chart Card */}
         <Card>
           <CardHeader>
-            <CardTitle>Pendapatan Per Bulan</CardTitle>
+            <CardTitle>Pemasukan & Pengeluaran Per Bulan</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -170,9 +208,9 @@ export default function LaporanKeuangan() {
                       tickLine={{ stroke: "hsl(var(--border))" }}
                     />
                     <Tooltip
-                      formatter={(value: number) => [
+                      formatter={(value: number, name: string) => [
                         formatTooltipValue(value),
-                        "Pendapatan",
+                        name === "pemasukan" ? "Pemasukan" : "Pengeluaran",
                       ]}
                       contentStyle={{
                         backgroundColor: "hsl(var(--card))",
@@ -182,9 +220,13 @@ export default function LaporanKeuangan() {
                       }}
                       labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
                     />
+                    <Legend
+                      formatter={(value) => (value === "pemasukan" ? "Pemasukan" : "Pengeluaran")}
+                    />
                     <Line
                       type="monotone"
-                      dataKey="pendapatan"
+                      dataKey="pemasukan"
+                      name="pemasukan"
                       stroke="hsl(var(--primary))"
                       strokeWidth={3}
                       dot={{
@@ -195,6 +237,25 @@ export default function LaporanKeuangan() {
                       }}
                       activeDot={{
                         fill: "hsl(var(--primary))",
+                        stroke: "hsl(var(--background))",
+                        strokeWidth: 2,
+                        r: 7,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="pengeluaran"
+                      name="pengeluaran"
+                      stroke="hsl(var(--destructive))"
+                      strokeWidth={3}
+                      dot={{
+                        fill: "hsl(var(--destructive))",
+                        stroke: "hsl(var(--background))",
+                        strokeWidth: 2,
+                        r: 5,
+                      }}
+                      activeDot={{
+                        fill: "hsl(var(--destructive))",
                         stroke: "hsl(var(--background))",
                         strokeWidth: 2,
                         r: 7,
