@@ -1,9 +1,12 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SummaryCard } from "@/components/finance/SummaryCard";
 import { TransactionForm } from "@/components/finance/TransactionForm";
 import { TransactionTable } from "@/components/finance/TransactionTable";
 import { SearchFilter } from "@/components/finance/SearchFilter";
+import { useTransactions } from "@/hooks/useTransactions";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Transaction, 
   TransactionType, 
@@ -14,61 +17,11 @@ import {
   Wallet, 
   TrendingUp, 
   TrendingDown, 
-  PiggyBank 
+  PiggyBank,
+  LogIn,
+  LogOut,
+  Loader2
 } from "lucide-react";
-import { toast } from "sonner";
-
-// Sample data
-const initialTransactions: Transaction[] = [
-  {
-    id: '1',
-    date: new Date('2024-01-15'),
-    detail: 'Project Website E-Commerce',
-    type: 'income',
-    amountIn: 5000000,
-    amountOut: 0,
-    balance: 5000000,
-    freelanceCategory: 'development',
-    expenseStatus: 'completed',
-    notes: 'Pembayaran DP 50%',
-  },
-  {
-    id: '2',
-    date: new Date('2024-01-18'),
-    detail: 'Pembelian Domain & Hosting',
-    type: 'expense',
-    amountIn: 0,
-    amountOut: 850000,
-    balance: 4150000,
-    freelanceCategory: 'development',
-    expenseStatus: 'completed',
-    notes: 'Untuk client ABC',
-  },
-  {
-    id: '3',
-    date: new Date('2024-01-20'),
-    detail: 'Desain Logo Brand XYZ',
-    type: 'income',
-    amountIn: 2500000,
-    amountOut: 0,
-    balance: 6650000,
-    freelanceCategory: 'design',
-    expenseStatus: 'completed',
-    notes: 'Full payment',
-  },
-  {
-    id: '4',
-    date: new Date('2024-01-22'),
-    detail: 'Langganan Software Design',
-    type: 'expense',
-    amountIn: 0,
-    amountOut: 450000,
-    balance: 6200000,
-    freelanceCategory: 'design',
-    expenseStatus: 'pending',
-    notes: 'Figma & Adobe',
-  },
-];
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -80,7 +33,8 @@ const formatCurrency = (amount: number) => {
 };
 
 const Index = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
+  const { user, isAdmin, signOut } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
@@ -107,15 +61,8 @@ const Index = () => {
   }, [transactions, searchQuery, typeFilter, statusFilter]);
 
   // Add transaction
-  const handleAddTransaction = (data: Omit<Transaction, 'id' | 'balance'>) => {
-    const newBalance = totals.balance + data.amountIn - data.amountOut;
-    const newTransaction: Transaction = {
-      ...data,
-      id: Date.now().toString(),
-      balance: newBalance,
-    };
-    setTransactions([...transactions, newTransaction]);
-    toast.success("Transaksi berhasil ditambahkan");
+  const handleAddTransaction = async (data: Omit<Transaction, 'id' | 'balance'>) => {
+    await addTransaction(data);
   };
 
   // Edit transaction
@@ -125,44 +72,15 @@ const Index = () => {
   };
 
   // Update transaction
-  const handleUpdateTransaction = (data: Omit<Transaction, 'id' | 'balance'>) => {
+  const handleUpdateTransaction = async (data: Omit<Transaction, 'id' | 'balance'>) => {
     if (!editingTransaction) return;
-    
-    const updatedTransactions = transactions.map((t) => {
-      if (t.id === editingTransaction.id) {
-        return {
-          ...t,
-          ...data,
-        };
-      }
-      return t;
-    });
-
-    // Recalculate balances
-    let runningBalance = 0;
-    const recalculatedTransactions = updatedTransactions.map((t) => {
-      runningBalance += t.amountIn - t.amountOut;
-      return { ...t, balance: runningBalance };
-    });
-
-    setTransactions(recalculatedTransactions);
+    await updateTransaction(editingTransaction.id, data);
     setEditingTransaction(undefined);
-    toast.success("Transaksi berhasil diperbarui");
   };
 
   // Delete transaction
-  const handleDeleteTransaction = (id: string) => {
-    const updatedTransactions = transactions.filter((t) => t.id !== id);
-    
-    // Recalculate balances
-    let runningBalance = 0;
-    const recalculatedTransactions = updatedTransactions.map((t) => {
-      runningBalance += t.amountIn - t.amountOut;
-      return { ...t, balance: runningBalance };
-    });
-
-    setTransactions(recalculatedTransactions);
-    toast.success("Transaksi berhasil dihapus");
+  const handleDeleteTransaction = async (id: string) => {
+    await deleteTransaction(id);
   };
 
   // Close form
@@ -172,6 +90,14 @@ const Index = () => {
       setEditingTransaction(undefined);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -187,11 +113,29 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">Pendataan Keuangan</p>
             </div>
           </div>
-          <Button onClick={() => setIsFormOpen(true)} className="btn-primary-gradient gap-2">
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Tambah Transaksi</span>
-            <span className="sm:hidden">Tambah</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button onClick={() => setIsFormOpen(true)} className="btn-primary-gradient gap-2">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">Tambah Transaksi</span>
+                <span className="sm:hidden">Tambah</span>
+              </Button>
+            )}
+            {user ? (
+              <Button variant="outline" onClick={signOut} className="gap-2">
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Keluar</span>
+              </Button>
+            ) : (
+              <Button variant="outline" asChild className="gap-2">
+                <Link to="/auth">
+                  <LogIn className="h-4 w-4" />
+                  <span className="hidden sm:inline">Masuk Admin</span>
+                  <span className="sm:hidden">Masuk</span>
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -251,19 +195,22 @@ const Index = () => {
         <section>
           <TransactionTable
             transactions={filteredTransactions}
-            onEdit={handleEditTransaction}
-            onDelete={handleDeleteTransaction}
+            onEdit={isAdmin ? handleEditTransaction : () => {}}
+            onDelete={isAdmin ? handleDeleteTransaction : () => {}}
+            isAdmin={isAdmin}
           />
         </section>
       </main>
 
       {/* Transaction Form Modal */}
-      <TransactionForm
-        open={isFormOpen}
-        onOpenChange={handleCloseForm}
-        onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
-        editTransaction={editingTransaction}
-      />
+      {isAdmin && (
+        <TransactionForm
+          open={isFormOpen}
+          onOpenChange={handleCloseForm}
+          onSubmit={editingTransaction ? handleUpdateTransaction : handleAddTransaction}
+          editTransaction={editingTransaction}
+        />
+      )}
     </div>
   );
 };

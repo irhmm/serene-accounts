@@ -32,6 +32,7 @@ interface TransactionTableProps {
   transactions: Transaction[];
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
+  isAdmin?: boolean;
 }
 
 const formatCurrency = (amount: number) => {
@@ -71,7 +72,7 @@ const getTypeBadgeVariant = (type: TransactionType) => {
   }
 };
 
-export function TransactionTable({ transactions, onEdit, onDelete }: TransactionTableProps) {
+export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = false }: TransactionTableProps) {
   if (transactions.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-12 text-center">
@@ -107,13 +108,13 @@ export function TransactionTable({ transactions, onEdit, onDelete }: Transaction
               <TableHead className="font-semibold">Tanggal</TableHead>
               <TableHead className="font-semibold">Detail</TableHead>
               <TableHead className="font-semibold">Tipe</TableHead>
-              <TableHead className="font-semibold text-right">Masuk</TableHead>
-              <TableHead className="font-semibold text-right">Keluar</TableHead>
+              <TableHead className="font-semibold text-right">Masuk DP</TableHead>
+              <TableHead className="font-semibold text-right">Keluar DP</TableHead>
               <TableHead className="font-semibold text-right">Saldo</TableHead>
               <TableHead className="font-semibold">Kategori</TableHead>
               <TableHead className="font-semibold">Status</TableHead>
               <TableHead className="font-semibold">Catatan</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
+              {isAdmin && <TableHead className="w-[50px]"></TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -162,28 +163,30 @@ export function TransactionTable({ transactions, onEdit, onDelete }: Transaction
                 <TableCell className="max-w-[150px] truncate text-muted-foreground">
                   {transaction.notes || '-'}
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-popover">
-                      <DropdownMenuItem onClick={() => onEdit(transaction)}>
-                        <Pencil className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => onDelete(transaction.id)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Hapus
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                {isAdmin && (
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-popover">
+                        <DropdownMenuItem onClick={() => onEdit(transaction)}>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => onDelete(transaction.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Hapus
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
