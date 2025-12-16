@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Plus } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { OrderTable } from '@/components/order/OrderTable';
 import { OrderForm } from '@/components/order/OrderForm';
 import { OrderPagination } from '@/components/order/OrderPagination';
+import { OrderSummaryCards } from '@/components/order/OrderSummaryCards';
+import { OrderSearchFilter } from '@/components/order/OrderSearchFilter';
 import { useMitraOrders } from '@/hooks/useMitraOrders';
 import { useWorkers } from '@/hooks/useWorkers';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,9 +33,29 @@ export default function JadwalOrderMitra() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
+
   useEffect(() => {
     fetchOrders(currentPage, perPage);
   }, [currentPage, perPage, fetchOrders]);
+
+  // Filter orders based on search and filters
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      const matchesSearch = searchTerm === '' || 
+        order.nomorOrder.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.namaPjFreelance.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.detailOrder.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+      const matchesPayment = paymentFilter === 'all' || order.statusPembayaran === paymentFilter;
+
+      return matchesSearch && matchesStatus && matchesPayment;
+    });
+  }, [orders, searchTerm, statusFilter, paymentFilter]);
 
   const handleAddOrder = () => {
     setEditingOrder(null);
@@ -95,6 +117,7 @@ export default function JadwalOrderMitra() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Jadwal Order Mitra</h1>
@@ -108,8 +131,22 @@ export default function JadwalOrderMitra() {
           )}
         </div>
 
+        {/* Summary Cards */}
+        <OrderSummaryCards orders={orders} totalCount={totalCount} />
+
+        {/* Search & Filter */}
+        <OrderSearchFilter
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          paymentFilter={paymentFilter}
+          onPaymentFilterChange={setPaymentFilter}
+        />
+
+        {/* Table */}
         <OrderTable
-          orders={orders}
+          orders={filteredOrders}
           isAdmin={isAdmin}
           onEdit={handleEditOrder}
           onDelete={(order) => setDeletingOrder(order)}
@@ -117,6 +154,7 @@ export default function JadwalOrderMitra() {
           perPage={perPage}
         />
 
+        {/* Pagination */}
         <OrderPagination
           currentPage={currentPage}
           totalItems={totalCount}
@@ -125,6 +163,7 @@ export default function JadwalOrderMitra() {
           onPerPageChange={handlePerPageChange}
         />
 
+        {/* Form Dialog */}
         {isAdmin && (
           <OrderForm
             open={showForm}
@@ -135,6 +174,7 @@ export default function JadwalOrderMitra() {
           />
         )}
 
+        {/* Delete Confirmation */}
         <AlertDialog open={!!deletingOrder} onOpenChange={() => setDeletingOrder(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
