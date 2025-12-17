@@ -11,6 +11,7 @@ import DaftarFranchise from "./pages/DaftarFranchise";
 import JadwalOrderMitra from "./pages/JadwalOrderMitra";
 import LaporanKeuangan from "./pages/LaporanKeuangan";
 import PencatatanOrderFranchise from "./pages/PencatatanOrderFranchise";
+import KeuanganFranchise from "./pages/KeuanganFranchise";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/workers" element={<DataWorker />} />
             <Route path="/franchise" element={<DaftarFranchise />} />
             <Route path="/franchise-orders" element={<PencatatanOrderFranchise />} />
+            <Route path="/franchise-finance" element={<KeuanganFranchise />} />
             <Route path="/orders" element={<JadwalOrderMitra />} />
             <Route path="/laporan" element={<LaporanKeuangan />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

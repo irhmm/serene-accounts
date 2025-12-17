@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      franchise_finances: {
+        Row: {
+          catatan: string | null
+          created_at: string | null
+          detail_order: string
+          franchise_id: string | null
+          id: string
+          nomor_order: string
+          status_pembayaran: string
+          tanggal_order: string
+          tanggal_pembayaran_franchisee: string | null
+          total_payment_cust: number
+          updated_at: string | null
+        }
+        Insert: {
+          catatan?: string | null
+          created_at?: string | null
+          detail_order: string
+          franchise_id?: string | null
+          id?: string
+          nomor_order: string
+          status_pembayaran?: string
+          tanggal_order?: string
+          tanggal_pembayaran_franchisee?: string | null
+          total_payment_cust?: number
+          updated_at?: string | null
+        }
+        Update: {
+          catatan?: string | null
+          created_at?: string | null
+          detail_order?: string
+          franchise_id?: string | null
+          id?: string
+          nomor_order?: string
+          status_pembayaran?: string
+          tanggal_order?: string
+          tanggal_pembayaran_franchisee?: string | null
+          total_payment_cust?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchise_finances_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       franchise_orders: {
         Row: {
           catatan: string | null
