@@ -1,4 +1,4 @@
-import { FileText, Users, Calendar, BarChart3, Building2 } from "lucide-react";
+import { FileText, Users, Calendar, BarChart3, Building2, ClipboardList } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,7 @@ const menuItems = [
   { title: "Pencatatan Keuangan", url: "/", icon: FileText, adminOnly: true },
   { title: "Data Worker", url: "/workers", icon: Users, adminOnly: true },
   { title: "Daftar Franchise", url: "/franchise", icon: Building2, adminOnly: true },
+  { title: "Pencatatan Order Franchise", url: "/franchise-orders", icon: ClipboardList, adminOnly: true },
   { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
 ];
 

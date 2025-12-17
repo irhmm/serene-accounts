@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      franchise_orders: {
+        Row: {
+          catatan: string | null
+          catatan_handover: string | null
+          created_at: string | null
+          deadline: string | null
+          detail_order: string
+          id: string
+          nomor_order: string
+          pj_franchisee: string
+          pj_mentor: string
+          status_kelengkapan: string
+          status_pengerjaan: string
+          tanggal_masuk: string
+          tanggal_selesai: string | null
+          total_pembayaran: number
+          updated_at: string | null
+        }
+        Insert: {
+          catatan?: string | null
+          catatan_handover?: string | null
+          created_at?: string | null
+          deadline?: string | null
+          detail_order: string
+          id?: string
+          nomor_order: string
+          pj_franchisee: string
+          pj_mentor: string
+          status_kelengkapan?: string
+          status_pengerjaan?: string
+          tanggal_masuk?: string
+          tanggal_selesai?: string | null
+          total_pembayaran?: number
+          updated_at?: string | null
+        }
+        Update: {
+          catatan?: string | null
+          catatan_handover?: string | null
+          created_at?: string | null
+          deadline?: string | null
+          detail_order?: string
+          id?: string
+          nomor_order?: string
+          pj_franchisee?: string
+          pj_mentor?: string
+          status_kelengkapan?: string
+          status_pengerjaan?: string
+          tanggal_masuk?: string
+          tanggal_selesai?: string | null
+          total_pembayaran?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       franchises: {
         Row: {
           alamat: string
