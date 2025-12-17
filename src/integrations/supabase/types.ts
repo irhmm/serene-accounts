@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      franchises: {
+        Row: {
+          alamat: string
+          catatan: string | null
+          created_at: string | null
+          id: string
+          keterangan: string
+          kontrak_berakhir: string
+          kontrak_mulai: string
+          nama_franchise: string
+          rekening: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          alamat: string
+          catatan?: string | null
+          created_at?: string | null
+          id?: string
+          keterangan?: string
+          kontrak_berakhir: string
+          kontrak_mulai: string
+          nama_franchise: string
+          rekening?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          alamat?: string
+          catatan?: string | null
+          created_at?: string | null
+          id?: string
+          keterangan?: string
+          kontrak_berakhir?: string
+          kontrak_mulai?: string
+          nama_franchise?: string
+          rekening?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       mitra_orders: {
         Row: {
           catatan: string | null
