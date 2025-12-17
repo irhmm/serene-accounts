@@ -9,21 +9,26 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
+const mainMenuItems = [
   { title: "Laporan Keuangan", url: "/laporan", icon: BarChart3, adminOnly: true },
   { title: "Pencatatan Keuangan", url: "/", icon: FileText, adminOnly: true },
   { title: "Data Worker", url: "/workers", icon: Users, adminOnly: true },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
+];
+
+const franchiseMenuItems = [
   { title: "Daftar Franchise", url: "/franchise", icon: Building2, adminOnly: true },
   { title: "Pencatatan Order Franchise", url: "/franchise-orders", icon: ClipboardList, adminOnly: false },
   { title: "Keuangan Franchise", url: "/franchise-finance", icon: Coins, adminOnly: false },
-  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
 ];
 
 export function AppSidebar() {
@@ -33,15 +38,38 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
 
   // Filter menu items based on user role
-  const visibleMenuItems = menuItems.filter(item => !item.adminOnly || isAdmin);
+  const visibleMainItems = mainMenuItems.filter(item => !item.adminOnly || isAdmin);
+  const visibleFranchiseItems = franchiseMenuItems.filter(item => !item.adminOnly || isAdmin);
 
   const isActive = (path: string) => {
     if (path === "/") {
       return location.pathname === "/";
     }
-    // Exact match OR starts with path followed by /
     return location.pathname === path || location.pathname.startsWith(path + "/");
   };
+
+  const renderMenuItems = (items: typeof mainMenuItems) => (
+    <SidebarMenu>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton
+            asChild
+            isActive={isActive(item.url)}
+            tooltip={item.title}
+          >
+            <NavLink
+              to={item.url}
+              className="flex items-center gap-3"
+              activeClassName="bg-primary/10 text-primary font-medium"
+            >
+              <item.icon className="h-5 w-5" />
+              <span>{item.title}</span>
+            </NavLink>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  );
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -64,28 +92,23 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {visibleMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink
-                      to={item.url}
-                      className="flex items-center gap-3"
-                      activeClassName="bg-primary/10 text-primary font-medium"
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            {renderMenuItems(visibleMainItems)}
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {visibleFranchiseItems.length > 0 && (
+          <>
+            <SidebarSeparator />
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs text-muted-foreground px-3">
+                Franchise
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                {renderMenuItems(visibleFranchiseItems)}
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
       </SidebarContent>
     </Sidebar>
   );
