@@ -5,6 +5,7 @@ import { MitraOrder } from '@/types/mitraOrder';
 interface OrderSummaryCardsProps {
   orders: MitraOrder[];
   totalCount: number;
+  isAdmin?: boolean;
 }
 
 const formatCurrency = (amount: number) => {
@@ -15,18 +16,19 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps) {
+export function OrderSummaryCards({ orders, totalCount, isAdmin = false }: OrderSummaryCardsProps) {
   const ordersInProgress = orders.filter((o) => o.statusPengerjaan === 'on_progress').length;
   const totalPendapatan = orders.reduce((sum, o) => sum + o.totalPembayaran, 0);
   const totalFeeMitra = orders.reduce((sum, o) => sum + o.feeFreelance, 0);
 
-  const cards = [
+  const allCards = [
     {
       title: 'Total Orders',
       value: totalCount.toString(),
       icon: ClipboardList,
       color: 'text-primary',
       bgColor: 'bg-primary/10',
+      showToAll: true,
     },
     {
       title: 'Orders Proses',
@@ -34,6 +36,7 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
       icon: Clock,
       color: 'text-amber-600',
       bgColor: 'bg-amber-100',
+      showToAll: true,
     },
     {
       title: 'Total Pendapatan',
@@ -41,6 +44,7 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
       icon: Wallet,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-100',
+      showToAll: false,
     },
     {
       title: 'Total Fee Mitra',
@@ -48,11 +52,14 @@ export function OrderSummaryCards({ orders, totalCount }: OrderSummaryCardsProps
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
+      showToAll: false,
     },
   ];
 
+  const cards = isAdmin ? allCards : allCards.filter(card => card.showToAll);
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 overflow-hidden">
+    <div className={`grid grid-cols-2 ${isAdmin ? 'lg:grid-cols-4' : 'lg:grid-cols-2'} gap-3 md:gap-4 overflow-hidden`}>
       {cards.map((card) => (
         <Card key={card.title} className="bg-card shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-3 md:p-4">

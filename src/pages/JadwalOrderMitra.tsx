@@ -158,7 +158,7 @@ export default function JadwalOrderMitra() {
 
         {/* Summary Cards - isolated from table scroll */}
         <div className="overflow-hidden">
-          <OrderSummaryCards orders={orders} totalCount={totalCount} />
+          <OrderSummaryCards orders={orders} totalCount={totalCount} isAdmin={isAdmin} />
         </div>
 
         {/* Search & Filter - isolated from table scroll */}
