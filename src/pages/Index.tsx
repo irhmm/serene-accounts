@@ -221,7 +221,7 @@ const Index = () => {
           />
           <SummaryCard
             title="Total Transaksi"
-            value={transactions.length.toString()}
+            value={filteredTransactions.length.toString()}
             icon={Wallet}
             variant="default"
           />
