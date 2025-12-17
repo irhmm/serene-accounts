@@ -45,13 +45,6 @@ export default function PencatatanOrderFranchise() {
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
 
-  useEffect(() => {
-    if (!isAdmin) {
-      toast.error('Anda tidak memiliki akses ke halaman ini');
-      navigate('/orders');
-      return;
-    }
-  }, [isAdmin, navigate]);
 
   // Cleanup state on unmount
   useEffect(() => {
@@ -150,9 +143,6 @@ export default function PencatatanOrderFranchise() {
     setCurrentPage(1);
   };
 
-  if (!isAdmin) {
-    return null;
-  }
 
   if (loading && orders.length === 0) {
     return (
