@@ -31,6 +31,14 @@ const DaftarFranchise = () => {
     }
   }, [isAdmin, authLoading, navigate, toast]);
 
+  // Cleanup state on unmount
+  useEffect(() => {
+    return () => {
+      setShowForm(false);
+      setEditingFranchise(null);
+    };
+  }, []);
+
   const handleAddFranchise = () => {
     setEditingFranchise(null);
     setShowForm(true);

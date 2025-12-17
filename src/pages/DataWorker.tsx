@@ -22,6 +22,14 @@ const DataWorker = () => {
       navigate('/');
     }
   }, [isAdmin, authLoading, navigate]);
+
+  // Cleanup state on unmount
+  useEffect(() => {
+    return () => {
+      setShowForm(false);
+      setEditingWorker(null);
+    };
+  }, []);
   
   const [showForm, setShowForm] = useState(false);
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
