@@ -61,27 +61,7 @@ export default function LaporanKeuangan() {
   const currentYear = new Date().getFullYear();
   const [yearFilter, setYearFilter] = useState<number | "all">(currentYear);
 
-  // Redirect non-admin users
-  useEffect(() => {
-    if (!authLoading && !isAdmin) {
-      toast.error("Anda tidak memiliki akses ke halaman ini");
-      navigate("/orders");
-    }
-  }, [isAdmin, authLoading, navigate]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
-
-  // Get available years from transactions
+  // Get available years from transactions - MUST be before any early returns
   const availableYears = useMemo(() => {
     const years = new Set<number>();
     transactions.forEach((t) => {
@@ -91,7 +71,7 @@ export default function LaporanKeuangan() {
     return Array.from(years).sort((a, b) => b - a);
   }, [transactions]);
 
-  // Calculate monthly income and expense data
+  // Calculate monthly income and expense data - MUST be before any early returns
   const monthlyData = useMemo(() => {
     const data: MonthlyData[] = monthNames.map((month) => ({
       month,
@@ -115,13 +95,34 @@ export default function LaporanKeuangan() {
     return data;
   }, [transactions, yearFilter]);
 
-  // Calculate totals
+  // Calculate totals - MUST be before any early returns
   const totals = useMemo(() => {
     const pemasukan = monthlyData.reduce((sum, d) => sum + d.pemasukan, 0);
     const pengeluaran = monthlyData.reduce((sum, d) => sum + d.pengeluaran, 0);
     const saldo = pemasukan - pengeluaran;
     return { pemasukan, pengeluaran, saldo };
   }, [monthlyData]);
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      toast.error("Anda tidak memiliki akses ke halaman ini");
+      navigate("/orders");
+    }
+  }, [isAdmin, authLoading, navigate]);
+
+  // Early returns AFTER all hooks
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <DashboardLayout>
