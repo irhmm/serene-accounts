@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SummaryCard } from "@/components/finance/SummaryCard";
 import { TransactionForm } from "@/components/finance/TransactionForm";
@@ -7,6 +8,7 @@ import { SearchFilter } from "@/components/finance/SearchFilter";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAuth } from "@/hooks/useAuth";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { toast } from "sonner";
 import { 
   Transaction, 
   TransactionType, 
@@ -47,7 +49,16 @@ const formatCurrency = (amount: number) => {
 
 const Index = () => {
   const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      toast.error("Anda tidak memiliki akses ke halaman ini");
+      navigate("/orders");
+    }
+  }, [isAdmin, authLoading, navigate]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
@@ -168,12 +179,16 @@ const Index = () => {
     return pages;
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
+  }
+
+  if (!isAdmin) {
+    return null;
   }
 
   const startItem = filteredTransactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
