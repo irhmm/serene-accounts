@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,7 +33,7 @@ interface WorkerFormProps {
   initialData?: Worker | null;
 }
 
-export const WorkerForm = ({ open, onClose, onSubmit, initialData }: WorkerFormProps) => {
+export const WorkerForm = forwardRef<HTMLDivElement, WorkerFormProps>(({ open, onClose, onSubmit, initialData }, ref) => {
   const [nama, setNama] = useState('');
   const [nomorWa, setNomorWa] = useState('');
   const [rekening, setRekening] = useState('');
@@ -159,4 +159,6 @@ export const WorkerForm = ({ open, onClose, onSubmit, initialData }: WorkerFormP
       </DialogContent>
     </Dialog>
   );
-};
+});
+
+WorkerForm.displayName = 'WorkerForm';

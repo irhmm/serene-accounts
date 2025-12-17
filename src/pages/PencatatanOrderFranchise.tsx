@@ -53,6 +53,15 @@ export default function PencatatanOrderFranchise() {
     }
   }, [isAdmin, navigate]);
 
+  // Cleanup state on unmount
+  useEffect(() => {
+    return () => {
+      setShowForm(false);
+      setEditingOrder(null);
+      setDeletingOrder(null);
+    };
+  }, []);
+
   useEffect(() => {
     fetchOrders(currentPage, perPage);
   }, [currentPage, perPage, fetchOrders]);

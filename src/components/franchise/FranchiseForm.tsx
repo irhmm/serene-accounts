@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,12 +34,12 @@ interface FranchiseFormProps {
   editingFranchise?: Franchise | null;
 }
 
-export const FranchiseForm = ({
+export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
   open,
   onClose,
   onSubmit,
   editingFranchise,
-}: FranchiseFormProps) => {
+}, ref) => {
   const [namaFranchise, setNamaFranchise] = useState("");
   const [alamat, setAlamat] = useState("");
   const [kontrakMulai, setKontrakMulai] = useState<Date>(new Date());
@@ -220,4 +220,6 @@ export const FranchiseForm = ({
       </DialogContent>
     </Dialog>
   );
-};
+});
+
+FranchiseForm.displayName = 'FranchiseForm';
