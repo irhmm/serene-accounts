@@ -1,6 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -19,7 +22,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Calendar, TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { Calendar, TrendingUp, TrendingDown, Wallet, Loader2 } from "lucide-react";
 
 const monthNames = [
   "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
@@ -53,8 +56,30 @@ const formatTooltipValue = (value: number) => {
 
 export default function LaporanKeuangan() {
   const { transactions, loading } = useTransactions();
+  const { isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [yearFilter, setYearFilter] = useState<number | "all">(currentYear);
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      toast.error("Anda tidak memiliki akses ke halaman ini");
+      navigate("/orders");
+    }
+  }, [isAdmin, authLoading, navigate]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   // Get available years from transactions
   const availableYears = useMemo(() => {
