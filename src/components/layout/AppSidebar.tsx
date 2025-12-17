@@ -38,7 +38,8 @@ export function AppSidebar() {
     if (path === "/") {
       return location.pathname === "/";
     }
-    return location.pathname.startsWith(path);
+    // Exact match OR starts with path followed by /
+    return location.pathname === path || location.pathname.startsWith(path + "/");
   };
 
   return (
