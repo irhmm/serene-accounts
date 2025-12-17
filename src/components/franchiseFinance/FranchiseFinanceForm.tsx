@@ -233,11 +233,13 @@ export function FranchiseFinanceForm({
                     <FormLabel>Total Payment Cust</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
                         placeholder="0"
-                        {...field}
+                        value={field.value === 0 ? '' : field.value.toString()}
                         onChange={(e) => {
-                          const value = parseInt(e.target.value) || 0;
+                          const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                          const value = rawValue === '' ? 0 : parseInt(rawValue, 10);
                           field.onChange(value);
                           handleTotalChange(value);
                         }}
