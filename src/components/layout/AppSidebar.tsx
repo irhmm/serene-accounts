@@ -18,7 +18,7 @@ import {
 
 const menuItems = [
   { title: "Laporan Keuangan", url: "/laporan", icon: BarChart3, adminOnly: true },
-  { title: "Transaksi", url: "/", icon: FileText, adminOnly: true },
+  { title: "Pencatatan Keuangan", url: "/", icon: FileText, adminOnly: true },
   { title: "Data Worker", url: "/workers", icon: Users, adminOnly: true },
   { title: "Daftar Franchise", url: "/franchise", icon: Building2, adminOnly: true },
   { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
