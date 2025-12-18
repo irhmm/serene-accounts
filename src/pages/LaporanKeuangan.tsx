@@ -159,16 +159,16 @@ export default function LaporanKeuangan() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground truncate">
                 Total Pemasukan {yearFilter !== "all" ? yearFilter : ""}
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-primary" />
+              <TrendingUp className="h-4 w-4 text-primary flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-primary">
+              <p className="text-lg md:text-2xl font-bold text-primary truncate">
                 {formatTooltipValue(totals.pemasukan)}
               </p>
             </CardContent>
@@ -176,13 +176,13 @@ export default function LaporanKeuangan() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground truncate">
                 Total Pengeluaran {yearFilter !== "all" ? yearFilter : ""}
               </CardTitle>
-              <TrendingDown className="h-4 w-4 text-destructive" />
+              <TrendingDown className="h-4 w-4 text-destructive flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-destructive">
+              <p className="text-lg md:text-2xl font-bold text-destructive truncate">
                 {formatTooltipValue(totals.pengeluaran)}
               </p>
             </CardContent>
@@ -190,13 +190,13 @@ export default function LaporanKeuangan() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground truncate">
                 Saldo {yearFilter !== "all" ? yearFilter : ""}
               </CardTitle>
-              <Wallet className="h-4 w-4 text-blue-500" />
+              <Wallet className="h-4 w-4 text-blue-500 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <p className={`text-2xl font-bold ${totals.saldo >= 0 ? "text-primary" : "text-destructive"}`}>
+              <p className={`text-lg md:text-2xl font-bold truncate ${totals.saldo >= 0 ? "text-primary" : "text-destructive"}`}>
                 {formatTooltipValue(totals.saldo)}
               </p>
             </CardContent>

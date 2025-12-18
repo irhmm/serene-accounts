@@ -50,11 +50,11 @@ export default function KelolaUser() {
 
   return (
     <DashboardLayout>
-      <div className="container py-6 space-y-6">
+      <div className="container px-3 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Kelola User Franchise</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Kelola User Franchise</h1>
+            <p className="text-sm text-muted-foreground">
               Kelola akun user franchise yang dapat mengakses sistem
             </p>
           </div>

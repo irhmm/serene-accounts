@@ -62,15 +62,15 @@ export function FranchiseFinanceSummaryCards({
   const visibleCards = allCards.filter((card) => !card.adminOnly || isAdmin);
 
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
       {visibleCards.map((card) => (
         <Card key={card.title}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-            <card.icon className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs md:text-sm font-medium truncate">{card.title}</CardTitle>
+            <card.icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{card.value}</div>
+            <div className="text-lg md:text-2xl font-bold truncate">{card.value}</div>
           </CardContent>
         </Card>
       ))}
