@@ -254,8 +254,9 @@ export function FranchiseFinanceForm({
                 <FormLabel>Fee Mentor (43%)</FormLabel>
                 <Input
                   value={formatCurrency(calculatedValues.feeMentor)}
-                  disabled
-                  className="bg-muted"
+                  readOnly
+                  tabIndex={0}
+                  className="bg-muted cursor-default"
                 />
               </div>
             </div>
@@ -265,8 +266,9 @@ export function FranchiseFinanceForm({
                 <FormLabel>Keuntungan Bersih (60% dari sisa)</FormLabel>
                 <Input
                   value={formatCurrency(calculatedValues.keuntunganBersih)}
-                  disabled
-                  className="bg-muted"
+                  readOnly
+                  tabIndex={0}
+                  className="bg-muted cursor-default"
                 />
               </div>
 
@@ -274,8 +276,9 @@ export function FranchiseFinanceForm({
                 <FormLabel>Komisi Mitra (40% dari sisa)</FormLabel>
                 <Input
                   value={formatCurrency(calculatedValues.komisiMitra)}
-                  disabled
-                  className="bg-muted"
+                  readOnly
+                  tabIndex={0}
+                  className="bg-muted cursor-default"
                 />
               </div>
             </div>

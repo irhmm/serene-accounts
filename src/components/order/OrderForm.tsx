@@ -371,14 +371,20 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Kekurangan (Rp)</Label>
-                  <div className="h-10 px-3 py-2 rounded-md border bg-muted/50 flex items-center">
+                  <div 
+                    tabIndex={0}
+                    className="h-10 px-3 py-2 rounded-md border bg-muted/50 flex items-center readonly-field cursor-default"
+                  >
                     <span className="text-amber-600 font-medium">{formatCurrency(kekurangan)}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">Otomatis: Total Pembayaran - Total DP</p>
                 </div>
                 <div className="space-y-2">
                   <Label>Fee Freelance (43%)</Label>
-                  <div className="h-10 px-3 py-2 rounded-md border bg-muted/50 flex items-center">
+                  <div 
+                    tabIndex={0}
+                    className="h-10 px-3 py-2 rounded-md border bg-muted/50 flex items-center readonly-field cursor-default"
+                  >
                     <span className="text-primary font-medium">{formatCurrency(feeFreelance)}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">Otomatis: 43% dari Total Pembayaran</p>
