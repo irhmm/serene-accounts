@@ -2,8 +2,15 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { FranchiseFinance, FranchiseFinanceFormData, PaymentStatus } from '@/types/franchiseFinance';
+import { 
+  FranchiseFinance, 
+  FranchiseFinanceFormData, 
+  PaymentStatus,
+  FormCompletenessStatus,
+  WorkStatus,
+} from '@/types/franchiseFinance';
 import { Franchise } from '@/types/franchise';
+import { Worker } from '@/types/worker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,6 +49,7 @@ interface FranchiseFinanceFormProps {
   onSubmit: (data: FranchiseFinanceFormData) => Promise<boolean>;
   editingFinance: FranchiseFinance | null;
   franchises: Franchise[];
+  workers: Worker[];
   calculateFields: (total: number) => { feeMentor: number; keuntunganBersih: number; komisiMitra: number };
 }
 
@@ -51,6 +59,7 @@ export function FranchiseFinanceForm({
   onSubmit,
   editingFinance,
   franchises,
+  workers,
   calculateFields,
 }: FranchiseFinanceFormProps) {
   const [calculatedValues, setCalculatedValues] = useState({
@@ -61,40 +70,49 @@ export function FranchiseFinanceForm({
 
   const form = useForm<FranchiseFinanceFormData>({
     defaultValues: {
-      tanggalOrder: new Date(),
+      tanggalClosingOrder: new Date(),
       detailOrder: '',
       nomorOrder: '',
       franchiseId: '',
+      pjMentor: '',
+      statusKelengkapan: 'perlu_adjustment',
       totalPaymentCust: 0,
       tanggalPembayaranFranchisee: null,
       statusPembayaran: 'pending',
-      catatan: '',
+      statusPengerjaan: 'not_started',
+      catatanHandover: '',
     },
   });
 
   useEffect(() => {
     if (editingFinance) {
       form.reset({
-        tanggalOrder: editingFinance.tanggalOrder,
+        tanggalClosingOrder: editingFinance.tanggalClosingOrder,
         detailOrder: editingFinance.detailOrder,
         nomorOrder: editingFinance.nomorOrder,
         franchiseId: editingFinance.franchiseId || '',
+        pjMentor: editingFinance.pjMentor || '',
+        statusKelengkapan: editingFinance.statusKelengkapan,
         totalPaymentCust: editingFinance.totalPaymentCust,
         tanggalPembayaranFranchisee: editingFinance.tanggalPembayaranFranchisee,
         statusPembayaran: editingFinance.statusPembayaran,
-        catatan: editingFinance.catatan || '',
+        statusPengerjaan: editingFinance.statusPengerjaan,
+        catatanHandover: editingFinance.catatanHandover || '',
       });
       setCalculatedValues(calculateFields(editingFinance.totalPaymentCust));
     } else {
       form.reset({
-        tanggalOrder: new Date(),
+        tanggalClosingOrder: new Date(),
         detailOrder: '',
         nomorOrder: '',
         franchiseId: '',
+        pjMentor: '',
+        statusKelengkapan: 'perlu_adjustment',
         totalPaymentCust: 0,
         tanggalPembayaranFranchisee: null,
         statusPembayaran: 'pending',
-        catatan: '',
+        statusPengerjaan: 'not_started',
+        catatanHandover: '',
       });
       setCalculatedValues({ feeMentor: 0, keuntunganBersih: 0, komisiMitra: 0 });
     }
@@ -133,10 +151,10 @@ export function FranchiseFinanceForm({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="tanggalOrder"
+                name="tanggalClosingOrder"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tanggal Order</FormLabel>
+                    <FormLabel>Tanggal Closing Order</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -197,25 +215,75 @@ export function FranchiseFinanceForm({
               )}
             />
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="franchiseId"
+                rules={{ required: 'Franchise wajib dipilih' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Franchise</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih franchise" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {franchises.map((franchise) => (
+                          <SelectItem key={franchise.id} value={franchise.id}>
+                            {franchise.namaFranchise}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pjMentor"
+                rules={{ required: 'PJ Mentor wajib dipilih' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>PJ Mentor</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih mentor" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {workers.map((worker) => (
+                          <SelectItem key={worker.id} value={worker.id}>
+                            {worker.nama}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="franchiseId"
-              rules={{ required: 'Franchise wajib dipilih' }}
+              name="statusKelengkapan"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Franchise</FormLabel>
+                  <FormLabel>Status Kelengkapan Form</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih franchise" />
+                        <SelectValue placeholder="Pilih status" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {franchises.map((franchise) => (
-                        <SelectItem key={franchise.id} value={franchise.id}>
-                          {franchise.namaFranchise}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="lengkap">Lengkap</SelectItem>
+                      <SelectItem value="perlu_adjustment">Perlu Adjustment</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -332,8 +400,9 @@ export function FranchiseFinanceForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
                         <SelectItem value="done">Done</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="non">Non</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -344,12 +413,35 @@ export function FranchiseFinanceForm({
 
             <FormField
               control={form.control}
-              name="catatan"
+              name="statusPengerjaan"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Catatan</FormLabel>
+                  <FormLabel>Status Pengerjaan</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="done">Done</SelectItem>
+                      <SelectItem value="on_progress">On Progress</SelectItem>
+                      <SelectItem value="not_started">Not Started</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="catatanHandover"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Catatan Hand Over</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Masukkan catatan (opsional)" {...field} />
+                    <Textarea placeholder="Masukkan catatan hand over (opsional)" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,4 +1,4 @@
-import { FileText, Users, Calendar, BarChart3, Building2, ClipboardList, Coins } from "lucide-react";
+import { FileText, Users, Calendar, BarChart3, Building2, Coins } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,7 +27,6 @@ const mainMenuItems = [
 
 const franchiseMenuItems = [
   { title: "Daftar Franchise", url: "/franchise", icon: Building2, adminOnly: true },
-  { title: "Pencatatan Order Franchise", url: "/franchise-orders", icon: ClipboardList, adminOnly: false },
   { title: "Keuangan Franchise", url: "/franchise-finance", icon: Coins, adminOnly: false },
 ];
 
