@@ -96,8 +96,9 @@ export default function KeuanganFranchise() {
         totalRevenue: acc.totalRevenue + finance.totalPaymentCust,
         totalFeeMentor: acc.totalFeeMentor + finance.feeMentor,
         totalKeuntungan: acc.totalKeuntungan + finance.keuntunganBersih,
+        totalKomisiMitra: acc.totalKomisiMitra + finance.komisiMitra,
       }),
-      { totalOrders: 0, totalRevenue: 0, totalFeeMentor: 0, totalKeuntungan: 0 }
+      { totalOrders: 0, totalRevenue: 0, totalFeeMentor: 0, totalKeuntungan: 0, totalKomisiMitra: 0 }
     );
   }, [filteredFinances]);
 
@@ -171,6 +172,7 @@ export default function KeuanganFranchise() {
           totalRevenue={totals.totalRevenue}
           totalFeeMentor={totals.totalFeeMentor}
           totalKeuntungan={totals.totalKeuntungan}
+          totalKomisiMitra={totals.totalKomisiMitra}
           isAdmin={isAdmin}
         />
 
