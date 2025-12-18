@@ -9,8 +9,9 @@ export function useFranchiseFinances() {
 
   const calculateFields = (totalPaymentCust: number) => {
     const feeMentor = Math.round(totalPaymentCust * 0.43);
-    const keuntunganBersih = Math.round(totalPaymentCust * 0.57);
-    const komisiMitra = Math.round(keuntunganBersih * 0.40);
+    const sisaSetelahFeeMentor = totalPaymentCust - feeMentor;
+    const komisiMitra = Math.round(sisaSetelahFeeMentor * 0.40);
+    const keuntunganBersih = Math.round(sisaSetelahFeeMentor * 0.60);
     return { feeMentor, keuntunganBersih, komisiMitra };
   };
 
