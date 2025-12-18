@@ -68,6 +68,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_franchise_finances_pj_mentor"
+            columns: ["pj_mentor"]
+            isOneToOne: false
+            referencedRelation: "workers"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "franchise_finances_franchise_id_fkey"
             columns: ["franchise_id"]
             isOneToOne: false
