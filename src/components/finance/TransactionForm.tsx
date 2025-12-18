@@ -212,7 +212,7 @@ export function TransactionForm({
             {/* Amount Grid */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="amountIn">Jumlah Masuk DP (Rp)</Label>
+                <Label htmlFor="amountIn">Jumlah Masuk (Rp)</Label>
                 <Input
                   id="amountIn"
                   placeholder="0"
@@ -222,7 +222,7 @@ export function TransactionForm({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="amountOut">Jumlah Keluar DP (Rp)</Label>
+                <Label htmlFor="amountOut">Jumlah Keluar (Rp)</Label>
                 <Input
                   id="amountOut"
                   placeholder="0"
