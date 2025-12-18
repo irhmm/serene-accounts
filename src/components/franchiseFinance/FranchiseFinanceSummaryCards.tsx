@@ -1,4 +1,4 @@
-import { ClipboardList, DollarSign, TrendingUp, Users } from 'lucide-react';
+import { Building2, ClipboardList, DollarSign, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface FranchiseFinanceSummaryCardsProps {
@@ -6,6 +6,7 @@ interface FranchiseFinanceSummaryCardsProps {
   totalRevenue: number;
   totalFeeMentor: number;
   totalKeuntungan: number;
+  totalKomisiMitra: number;
   isAdmin: boolean;
 }
 
@@ -14,6 +15,7 @@ export function FranchiseFinanceSummaryCards({
   totalRevenue,
   totalFeeMentor,
   totalKeuntungan,
+  totalKomisiMitra,
   isAdmin,
 }: FranchiseFinanceSummaryCardsProps) {
   const formatCurrency = (value: number) => {
@@ -44,6 +46,12 @@ export function FranchiseFinanceSummaryCards({
       adminOnly: true,
     },
     {
+      title: 'Total Pendapatan Franchise',
+      value: formatCurrency(totalKomisiMitra),
+      icon: Building2,
+      adminOnly: true,
+    },
+    {
       title: 'Total Keuntungan',
       value: formatCurrency(totalKeuntungan),
       icon: TrendingUp,
@@ -54,7 +62,7 @@ export function FranchiseFinanceSummaryCards({
   const visibleCards = allCards.filter((card) => !card.adminOnly || isAdmin);
 
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
       {visibleCards.map((card) => (
         <Card key={card.title}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
