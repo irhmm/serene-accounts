@@ -18,7 +18,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-type UserRole = 'admin' | 'franchise';
+type UserRole = 'admin' | 'franchise' | 'public';
 
 interface MenuItem {
   title: string;
@@ -32,7 +32,7 @@ const mainMenuItems: MenuItem[] = [
   { title: "Pencatatan Keuangan", url: "/", icon: FileText, roles: ['admin'] },
   { title: "Data Worker", url: "/workers", icon: Users, roles: ['admin'] },
   { title: "Kelola User", url: "/kelola-user", icon: UserPlus, roles: ['admin'] },
-  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, roles: ['admin', 'franchise'] },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, roles: ['public'] },
 ];
 
 const franchiseMenuItems: MenuItem[] = [
@@ -51,6 +51,7 @@ export function AppSidebar() {
     return items.filter(item => {
       if (isAdmin && item.roles.includes('admin')) return true;
       if (isFranchise && item.roles.includes('franchise')) return true;
+      if (item.roles.includes('public')) return true; // Show to everyone including non-logged-in users
       return false;
     });
   };

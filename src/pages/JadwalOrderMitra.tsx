@@ -43,18 +43,7 @@ export default function JadwalOrderMitra() {
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
 
-  // Auth check - redirect if not admin or franchise
-  useEffect(() => {
-    if (!authLoading && !user) {
-      toast.error('Anda harus login terlebih dahulu');
-      navigate('/auth');
-      return;
-    }
-    if (!authLoading && user && !isAdmin && !isFranchise) {
-      toast.error('Anda tidak memiliki akses ke halaman ini');
-      navigate('/auth');
-    }
-  }, [user, isAdmin, isFranchise, authLoading, navigate]);
+  // No auth check - this page is publicly accessible (read-only for non-admin)
 
   useEffect(() => {
     fetchOrders(currentPage, perPage);
