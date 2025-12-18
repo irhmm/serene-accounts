@@ -262,7 +262,7 @@ export function FranchiseFinanceForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <FormLabel>Keuntungan Bersih</FormLabel>
+                <FormLabel>Keuntungan Bersih (60% dari sisa)</FormLabel>
                 <Input
                   value={formatCurrency(calculatedValues.keuntunganBersih)}
                   disabled
@@ -271,7 +271,7 @@ export function FranchiseFinanceForm({
               </div>
 
               <div className="space-y-2">
-                <FormLabel>Komisi Mitra (40%)</FormLabel>
+                <FormLabel>Komisi Mitra (40% dari sisa)</FormLabel>
                 <Input
                   value={formatCurrency(calculatedValues.komisiMitra)}
                   disabled
