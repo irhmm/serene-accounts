@@ -253,10 +253,14 @@ export function FranchiseOrderForm({ open, onClose, onSubmit, initialData, franc
                   <Label htmlFor="totalPembayaran">Total Pembayaran (Rp)</Label>
                   <Input
                     id="totalPembayaran"
-                    type="number"
-                    value={totalPembayaran}
-                    onChange={(e) => setTotalPembayaran(Number(e.target.value))}
-                    min={0}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={totalPembayaran === 0 ? '' : totalPembayaran.toString()}
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setTotalPembayaran(rawValue === '' ? 0 : parseInt(rawValue, 10));
+                    }}
                   />
                 </div>
                 <div className="space-y-2">

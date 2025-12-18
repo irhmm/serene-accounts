@@ -343,20 +343,28 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                   <Label htmlFor="totalDp">Total DP (Rp)</Label>
                   <Input
                     id="totalDp"
-                    type="number"
-                    value={totalDp}
-                    onChange={(e) => setTotalDp(Number(e.target.value))}
-                    min={0}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={totalDp === 0 ? '' : totalDp.toString()}
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setTotalDp(rawValue === '' ? 0 : parseInt(rawValue, 10));
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="totalPembayaran">Total Pembayaran (Rp)</Label>
                   <Input
                     id="totalPembayaran"
-                    type="number"
-                    value={totalPembayaran}
-                    onChange={(e) => setTotalPembayaran(Number(e.target.value))}
-                    min={0}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={totalPembayaran === 0 ? '' : totalPembayaran.toString()}
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setTotalPembayaran(rawValue === '' ? 0 : parseInt(rawValue, 10));
+                    }}
                   />
                 </div>
               </div>
@@ -372,10 +380,14 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                   <Label htmlFor="feeFreelance">Fee Freelance (Rp)</Label>
                   <Input
                     id="feeFreelance"
-                    type="number"
-                    value={feeFreelance}
-                    onChange={(e) => setFeeFreelance(Number(e.target.value))}
-                    min={0}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={feeFreelance === 0 ? '' : feeFreelance.toString()}
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setFeeFreelance(rawValue === '' ? 0 : parseInt(rawValue, 10));
+                    }}
                   />
                 </div>
               </div>
