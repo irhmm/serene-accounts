@@ -17,39 +17,51 @@ export type Database = {
       franchise_finances: {
         Row: {
           catatan: string | null
+          catatan_handover: string | null
           created_at: string | null
           detail_order: string
           franchise_id: string | null
           id: string
           nomor_order: string
+          pj_mentor: string | null
+          status_kelengkapan: string
           status_pembayaran: string
-          tanggal_order: string
+          status_pengerjaan: string
+          tanggal_closing_order: string
           tanggal_pembayaran_franchisee: string | null
           total_payment_cust: number
           updated_at: string | null
         }
         Insert: {
           catatan?: string | null
+          catatan_handover?: string | null
           created_at?: string | null
           detail_order: string
           franchise_id?: string | null
           id?: string
           nomor_order: string
+          pj_mentor?: string | null
+          status_kelengkapan?: string
           status_pembayaran?: string
-          tanggal_order?: string
+          status_pengerjaan?: string
+          tanggal_closing_order?: string
           tanggal_pembayaran_franchisee?: string | null
           total_payment_cust?: number
           updated_at?: string | null
         }
         Update: {
           catatan?: string | null
+          catatan_handover?: string | null
           created_at?: string | null
           detail_order?: string
           franchise_id?: string | null
           id?: string
           nomor_order?: string
+          pj_mentor?: string | null
+          status_kelengkapan?: string
           status_pembayaran?: string
-          tanggal_order?: string
+          status_pengerjaan?: string
+          tanggal_closing_order?: string
           tanggal_pembayaran_franchisee?: string | null
           total_payment_cust?: number
           updated_at?: string | null

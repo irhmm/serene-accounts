@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useFranchiseFinances } from '@/hooks/useFranchiseFinances';
 import { useFranchises } from '@/hooks/useFranchises';
+import { useWorkers } from '@/hooks/useWorkers';
 import { FranchiseFinance, FranchiseFinanceFormData } from '@/types/franchiseFinance';
 import { FranchiseFinanceTable } from '@/components/franchiseFinance/FranchiseFinanceTable';
 import { FranchiseFinanceForm } from '@/components/franchiseFinance/FranchiseFinanceForm';
@@ -27,6 +28,7 @@ export default function KeuanganFranchise() {
   const { isAdmin } = useAuth();
   const { finances, loading, addFinance, updateFinance, deleteFinance, calculateFields } = useFranchiseFinances();
   const { franchises } = useFranchises();
+  const { workers } = useWorkers();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingFinance, setEditingFinance] = useState<FranchiseFinance | null>(null);
@@ -55,7 +57,7 @@ export default function KeuanganFranchise() {
   const availableYears = useMemo(() => {
     const years = new Set<string>();
     finances.forEach((finance) => {
-      years.add(finance.tanggalOrder.getFullYear().toString());
+      years.add(finance.tanggalClosingOrder.getFullYear().toString());
     });
     return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
   }, [finances]);
@@ -68,17 +70,18 @@ export default function KeuanganFranchise() {
       const matchesSearch =
         finance.nomorOrder.toLowerCase().includes(searchLower) ||
         finance.detailOrder.toLowerCase().includes(searchLower) ||
-        (finance.franchiseName?.toLowerCase().includes(searchLower) ?? false);
+        (finance.franchiseName?.toLowerCase().includes(searchLower) ?? false) ||
+        (finance.pjMentorName?.toLowerCase().includes(searchLower) ?? false);
 
       // Status filter
       const matchesStatus = statusFilter === 'all' || finance.statusPembayaran === statusFilter;
 
       // Month filter
-      const orderMonth = (finance.tanggalOrder.getMonth() + 1).toString().padStart(2, '0');
+      const orderMonth = (finance.tanggalClosingOrder.getMonth() + 1).toString().padStart(2, '0');
       const matchesMonth = monthFilter === 'all' || orderMonth === monthFilter;
 
       // Year filter
-      const orderYear = finance.tanggalOrder.getFullYear().toString();
+      const orderYear = finance.tanggalClosingOrder.getFullYear().toString();
       const matchesYear = yearFilter === 'all' || orderYear === yearFilter;
 
       return matchesSearch && matchesStatus && matchesMonth && matchesYear;
@@ -216,6 +219,7 @@ export default function KeuanganFranchise() {
               onSubmit={handleSubmit}
               editingFinance={editingFinance}
               franchises={franchises}
+              workers={workers}
               calculateFields={calculateFields}
             />
 

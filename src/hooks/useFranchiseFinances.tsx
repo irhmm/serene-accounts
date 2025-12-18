@@ -22,9 +22,10 @@ export function useFranchiseFinances() {
         .from('franchise_finances')
         .select(`
           *,
-          franchises:franchise_id (nama_franchise)
+          franchises:franchise_id (nama_franchise),
+          workers:pj_mentor (nama)
         `)
-        .order('tanggal_order', { ascending: false });
+        .order('tanggal_closing_order', { ascending: false });
 
       if (error) throw error;
 
@@ -32,11 +33,14 @@ export function useFranchiseFinances() {
         const calculated = calculateFields(item.total_payment_cust);
         return {
           id: item.id,
-          tanggalOrder: new Date(item.tanggal_order),
+          tanggalClosingOrder: new Date(item.tanggal_closing_order),
           detailOrder: item.detail_order,
           nomorOrder: item.nomor_order,
           franchiseId: item.franchise_id,
           franchiseName: item.franchises?.nama_franchise || '-',
+          pjMentor: item.pj_mentor,
+          pjMentorName: item.workers?.nama || '-',
+          statusKelengkapan: item.status_kelengkapan,
           totalPaymentCust: item.total_payment_cust,
           feeMentor: calculated.feeMentor,
           keuntunganBersih: calculated.keuntunganBersih,
@@ -45,7 +49,8 @@ export function useFranchiseFinances() {
             ? new Date(item.tanggal_pembayaran_franchisee) 
             : null,
           statusPembayaran: item.status_pembayaran,
-          catatan: item.catatan,
+          statusPengerjaan: item.status_pengerjaan,
+          catatanHandover: item.catatan_handover,
           createdAt: new Date(item.created_at),
           updatedAt: new Date(item.updated_at),
         };
@@ -63,16 +68,19 @@ export function useFranchiseFinances() {
   const addFinance = async (formData: FranchiseFinanceFormData) => {
     try {
       const { error } = await supabase.from('franchise_finances').insert({
-        tanggal_order: formData.tanggalOrder.toISOString().split('T')[0],
+        tanggal_closing_order: formData.tanggalClosingOrder.toISOString().split('T')[0],
         detail_order: formData.detailOrder,
         nomor_order: formData.nomorOrder,
         franchise_id: formData.franchiseId || null,
+        pj_mentor: formData.pjMentor || null,
+        status_kelengkapan: formData.statusKelengkapan,
         total_payment_cust: formData.totalPaymentCust,
         tanggal_pembayaran_franchisee: formData.tanggalPembayaranFranchisee 
           ? formData.tanggalPembayaranFranchisee.toISOString().split('T')[0] 
           : null,
         status_pembayaran: formData.statusPembayaran,
-        catatan: formData.catatan || null,
+        status_pengerjaan: formData.statusPengerjaan,
+        catatan_handover: formData.catatanHandover || null,
       });
 
       if (error) throw error;
@@ -92,16 +100,19 @@ export function useFranchiseFinances() {
       const { error } = await supabase
         .from('franchise_finances')
         .update({
-          tanggal_order: formData.tanggalOrder.toISOString().split('T')[0],
+          tanggal_closing_order: formData.tanggalClosingOrder.toISOString().split('T')[0],
           detail_order: formData.detailOrder,
           nomor_order: formData.nomorOrder,
           franchise_id: formData.franchiseId || null,
+          pj_mentor: formData.pjMentor || null,
+          status_kelengkapan: formData.statusKelengkapan,
           total_payment_cust: formData.totalPaymentCust,
           tanggal_pembayaran_franchisee: formData.tanggalPembayaranFranchisee 
             ? formData.tanggalPembayaranFranchisee.toISOString().split('T')[0] 
             : null,
           status_pembayaran: formData.statusPembayaran,
-          catatan: formData.catatan || null,
+          status_pengerjaan: formData.statusPengerjaan,
+          catatan_handover: formData.catatanHandover || null,
         })
         .eq('id', id);
 
