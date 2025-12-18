@@ -74,7 +74,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const [statusPembayaran, setStatusPembayaran] = useState<PaymentStatus>('belum_bayar');
   const [totalDp, setTotalDp] = useState(0);
   const [totalPembayaran, setTotalPembayaran] = useState(0);
-  const [feeFreelance, setFeeFreelance] = useState(0);
   const [tanggalEnd, setTanggalEnd] = useState<Date | undefined>(undefined);
   const [statusPengerjaan, setStatusPengerjaan] = useState<WorkStatus>('not_started');
   const [statusPelunasan, setStatusPelunasan] = useState<SettlementStatus>('belum_lunas');
@@ -84,6 +83,9 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
 
   // Auto-calculate kekurangan
   const kekurangan = Math.max(0, totalPembayaran - totalDp);
+  
+  // Auto-calculate fee freelance (43% dari total pembayaran)
+  const feeFreelance = Math.round(totalPembayaran * 0.43);
 
   useEffect(() => {
     if (initialData) {
@@ -103,7 +105,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       setStatusPembayaran(initialData.statusPembayaran);
       setTotalDp(initialData.totalDp);
       setTotalPembayaran(initialData.totalPembayaran);
-      setFeeFreelance(initialData.feeFreelance);
       setTanggalEnd(initialData.tanggalEnd || undefined);
       setStatusPengerjaan(initialData.statusPengerjaan || 'not_started');
       setStatusPelunasan(initialData.statusPelunasan);
@@ -124,7 +125,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
     setStatusPembayaran('belum_bayar');
     setTotalDp(0);
     setTotalPembayaran(0);
-    setFeeFreelance(0);
     setTanggalEnd(undefined);
     setStatusPengerjaan('not_started');
     setStatusPelunasan('belum_lunas');
@@ -377,18 +377,11 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                   <p className="text-xs text-muted-foreground">Otomatis: Total Pembayaran - Total DP</p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="feeFreelance">Fee Freelance (Rp)</Label>
-                  <Input
-                    id="feeFreelance"
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="0"
-                    value={feeFreelance === 0 ? '' : feeFreelance.toString()}
-                    onChange={(e) => {
-                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                      setFeeFreelance(rawValue === '' ? 0 : parseInt(rawValue, 10));
-                    }}
-                  />
+                  <Label>Fee Freelance (43%)</Label>
+                  <div className="h-10 px-3 py-2 rounded-md border bg-muted/50 flex items-center">
+                    <span className="text-primary font-medium">{formatCurrency(feeFreelance)}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Otomatis: 43% dari Total Pembayaran</p>
                 </div>
               </div>
             </div>
