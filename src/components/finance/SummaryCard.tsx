@@ -33,9 +33,9 @@ export function SummaryCard({
       className
     )}>
       <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold tracking-tight">{value}</p>
+        <div className="space-y-1 md:space-y-2 min-w-0 flex-1">
+          <p className="text-xs md:text-sm font-medium text-muted-foreground truncate">{title}</p>
+          <p className="text-lg md:text-2xl font-bold tracking-tight truncate">{value}</p>
           {trend && (
             <p className={cn(
               "text-xs font-medium",

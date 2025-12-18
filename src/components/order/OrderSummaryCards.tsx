@@ -64,9 +64,9 @@ export function OrderSummaryCards({ orders, totalCount, isAdmin = false }: Order
         <Card key={card.title} className="bg-card shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between gap-2">
-              <div className="space-y-0.5 md:space-y-1 min-w-0 flex-1">
+            <div className="space-y-0.5 md:space-y-1 min-w-0 flex-1">
                 <p className="text-xs md:text-sm text-muted-foreground truncate">{card.title}</p>
-                <p className="text-base md:text-xl font-bold text-foreground truncate">{card.value}</p>
+                <p className="text-sm md:text-lg font-bold text-foreground truncate">{card.value}</p>
               </div>
               <div className={`h-9 w-9 md:h-11 md:w-11 rounded-full ${card.bgColor} flex items-center justify-center flex-shrink-0`}>
                 <card.icon className={`h-4 w-4 md:h-5 md:w-5 ${card.color}`} />
