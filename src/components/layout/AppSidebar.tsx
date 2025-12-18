@@ -1,4 +1,4 @@
-import { FileText, Users, Calendar, BarChart3, Building2, Coins } from "lucide-react";
+import { FileText, Users, Calendar, BarChart3, Building2, Coins, UserPlus } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,27 +18,45 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainMenuItems = [
-  { title: "Laporan Keuangan", url: "/laporan", icon: BarChart3, adminOnly: true },
-  { title: "Pencatatan Keuangan", url: "/", icon: FileText, adminOnly: true },
-  { title: "Data Worker", url: "/workers", icon: Users, adminOnly: true },
-  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, adminOnly: false },
+type UserRole = 'admin' | 'franchise';
+
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  roles: UserRole[];
+}
+
+const mainMenuItems: MenuItem[] = [
+  { title: "Laporan Keuangan", url: "/laporan", icon: BarChart3, roles: ['admin'] },
+  { title: "Pencatatan Keuangan", url: "/", icon: FileText, roles: ['admin'] },
+  { title: "Data Worker", url: "/workers", icon: Users, roles: ['admin'] },
+  { title: "Kelola User", url: "/kelola-user", icon: UserPlus, roles: ['admin'] },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, roles: ['admin', 'franchise'] },
 ];
 
-const franchiseMenuItems = [
-  { title: "Daftar Franchise", url: "/franchise", icon: Building2, adminOnly: true },
-  { title: "Keuangan Franchise", url: "/franchise-finance", icon: Coins, adminOnly: false },
+const franchiseMenuItems: MenuItem[] = [
+  { title: "Daftar Franchise", url: "/franchise", icon: Building2, roles: ['admin'] },
+  { title: "Keuangan Franchise", url: "/franchise-finance", icon: Coins, roles: ['admin', 'franchise'] },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { isAdmin, isFranchise } = useAuth();
   const collapsed = state === "collapsed";
 
   // Filter menu items based on user role
-  const visibleMainItems = mainMenuItems.filter(item => !item.adminOnly || isAdmin);
-  const visibleFranchiseItems = franchiseMenuItems.filter(item => !item.adminOnly || isAdmin);
+  const filterByRole = (items: MenuItem[]) => {
+    return items.filter(item => {
+      if (isAdmin && item.roles.includes('admin')) return true;
+      if (isFranchise && item.roles.includes('franchise')) return true;
+      return false;
+    });
+  };
+
+  const visibleMainItems = filterByRole(mainMenuItems);
+  const visibleFranchiseItems = filterByRole(franchiseMenuItems);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -47,7 +65,7 @@ export function AppSidebar() {
     return location.pathname === path || location.pathname.startsWith(path + "/");
   };
 
-  const renderMenuItems = (items: typeof mainMenuItems) => (
+  const renderMenuItems = (items: MenuItem[]) => (
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>

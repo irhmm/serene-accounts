@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { FranchiseFinanceForm } from '@/components/franchiseFinance/FranchiseFin
 import { FranchiseFinanceSummaryCards } from '@/components/franchiseFinance/FranchiseFinanceSummaryCards';
 import { FranchiseFinanceSearchFilter } from '@/components/franchiseFinance/FranchiseFinanceSearchFilter';
 import { FranchiseFinancePagination } from '@/components/franchiseFinance/FranchiseFinancePagination';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +27,8 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function KeuanganFranchise() {
-  const { isAdmin } = useAuth();
+  const { user, isAdmin, isFranchise, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const { finances, loading, addFinance, updateFinance, deleteFinance, calculateFields } = useFranchiseFinances();
   const { franchises } = useFranchises();
   const { workers } = useWorkers();
@@ -43,6 +46,19 @@ export default function KeuanganFranchise() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Auth check - redirect if not admin or franchise
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast.error('Anda harus login terlebih dahulu');
+      navigate('/auth');
+      return;
+    }
+    if (!authLoading && user && !isAdmin && !isFranchise) {
+      toast.error('Anda tidak memiliki akses ke halaman ini');
+      navigate('/auth');
+    }
+  }, [user, isAdmin, isFranchise, authLoading, navigate]);
 
   // Cleanup on unmount
   useEffect(() => {

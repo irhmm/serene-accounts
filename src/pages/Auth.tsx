@@ -14,14 +14,21 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { user, signIn } = useAuth();
+  const { user, userRole, loading, signIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      navigate('/');
+    if (!loading && user && userRole) {
+      // Redirect based on user role
+      if (userRole === 'admin') {
+        navigate('/');
+      } else if (userRole === 'franchise') {
+        navigate('/orders');
+      } else {
+        navigate('/orders');
+      }
     }
-  }, [user, navigate]);
+  }, [user, userRole, loading, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,9 +43,18 @@ export default function Auth() {
       toast.error(error.message || 'Gagal masuk');
     } else {
       toast.success('Berhasil masuk');
-      navigate('/');
+      // Navigation will happen via useEffect when userRole is set
     }
   };
+
+  // Don't show anything while checking auth state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
