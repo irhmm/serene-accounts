@@ -101,7 +101,7 @@ export function AppSidebar() {
             />
             <div className="flex flex-col">
               <span className="font-semibold text-foreground">Pembimbingmu</span>
-              <span className="text-xs text-muted-foreground">Rekap Jasa Tugasmu</span>
+              <span className="text-xs text-muted-foreground">Rekap Pembimbingmu</span>
             </div>
           </div>
         </SidebarHeader>
