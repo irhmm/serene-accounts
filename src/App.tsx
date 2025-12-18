@@ -11,6 +11,7 @@ import DaftarFranchise from "./pages/DaftarFranchise";
 import JadwalOrderMitra from "./pages/JadwalOrderMitra";
 import LaporanKeuangan from "./pages/LaporanKeuangan";
 import KeuanganFranchise from "./pages/KeuanganFranchise";
+import KelolaUser from "./pages/KelolaUser";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/franchise-finance" element={<KeuanganFranchise />} />
             <Route path="/orders" element={<JadwalOrderMitra />} />
             <Route path="/laporan" element={<LaporanKeuangan />} />
+            <Route path="/kelola-user" element={<KelolaUser />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

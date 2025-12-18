@@ -2,12 +2,14 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-type AppRole = 'admin' | 'user';
+type AppRole = 'admin' | 'user' | 'franchise';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
+  isFranchise: boolean;
+  userRole: AppRole | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -20,20 +22,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isFranchise, setIsFranchise] = useState(false);
+  const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const checkAdminRole = async (userId: string) => {
+  const checkUserRole = async (userId: string) => {
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
-      .eq('role', 'admin')
       .maybeSingle();
     
     if (!error && data) {
-      setIsAdmin(true);
+      const role = data.role as AppRole;
+      setUserRole(role);
+      setIsAdmin(role === 'admin');
+      setIsFranchise(role === 'franchise');
     } else {
+      setUserRole(null);
       setIsAdmin(false);
+      setIsFranchise(false);
     }
   };
 
@@ -45,10 +53,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         if (session?.user) {
           setTimeout(() => {
-            checkAdminRole(session.user.id);
+            checkUserRole(session.user.id);
           }, 0);
         } else {
+          setUserRole(null);
           setIsAdmin(false);
+          setIsFranchise(false);
         }
       }
     );
@@ -57,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id);
+        checkUserRole(session.user.id);
       }
       setLoading(false);
     });
@@ -82,11 +92,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setUserRole(null);
     setIsAdmin(false);
+    setIsFranchise(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, isFranchise, userRole, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
