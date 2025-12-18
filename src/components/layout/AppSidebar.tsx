@@ -30,9 +30,9 @@ interface MenuItem {
 const mainMenuItems: MenuItem[] = [
   { title: "Laporan Keuangan", url: "/laporan", icon: BarChart3, roles: ['admin'] },
   { title: "Pencatatan Keuangan", url: "/", icon: FileText, roles: ['admin'] },
+  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, roles: ['public'] },
   { title: "Data Worker", url: "/workers", icon: Users, roles: ['admin'] },
   { title: "Kelola User", url: "/kelola-user", icon: UserPlus, roles: ['admin'] },
-  { title: "Jadwal Order Mitra", url: "/orders", icon: Calendar, roles: ['public'] },
 ];
 
 const franchiseMenuItems: MenuItem[] = [
