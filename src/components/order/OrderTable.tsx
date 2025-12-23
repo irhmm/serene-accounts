@@ -34,6 +34,7 @@ import {
   getOrderTypeLabel,
   getOrderTypeColor,
 } from '@/types/mitraOrder';
+import { DateSortToggle, SortOrder } from '@/components/ui/date-sort-toggle';
 
 interface OrderTableProps {
   orders: MitraOrder[];
@@ -42,6 +43,8 @@ interface OrderTableProps {
   onDelete: (order: MitraOrder) => void;
   currentPage: number;
   perPage: number;
+  sortOrder?: SortOrder;
+  onSortChange?: (order: SortOrder) => void;
 }
 
 const formatCurrency = (amount: number) => {
@@ -59,6 +62,8 @@ export function OrderTable({
   onDelete,
   currentPage,
   perPage,
+  sortOrder = 'desc',
+  onSortChange,
 }: OrderTableProps) {
   if (orders.length === 0) {
     return (
@@ -86,7 +91,17 @@ export function OrderTable({
               <TableHead className="min-w-[100px] font-semibold">Type</TableHead>
               <TableHead className="min-w-[130px] font-semibold">PJ Freelance</TableHead>
               <TableHead className="min-w-[100px] font-semibold">Pengerjaan</TableHead>
-              <TableHead className="min-w-[100px] font-semibold">Tgl Start</TableHead>
+              <TableHead className="min-w-[100px]">
+                {onSortChange ? (
+                  <DateSortToggle
+                    label="Tgl Start"
+                    sortOrder={sortOrder}
+                    onSortChange={onSortChange}
+                  />
+                ) : (
+                  <span className="font-semibold">Tgl Start</span>
+                )}
+              </TableHead>
               <TableHead className="min-w-[110px] font-semibold">Pembayaran</TableHead>
               <TableHead className="min-w-[110px] text-right font-semibold">Total DP</TableHead>
               <TableHead className="min-w-[120px] text-right font-semibold">Total Bayar</TableHead>

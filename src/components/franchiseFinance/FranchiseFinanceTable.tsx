@@ -25,6 +25,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { DateSortToggle, SortOrder } from '@/components/ui/date-sort-toggle';
 
 interface FranchiseFinanceTableProps {
   finances: FranchiseFinance[];
@@ -32,6 +33,8 @@ interface FranchiseFinanceTableProps {
   onDelete: (id: string) => void;
   isAdmin: boolean;
   startIndex: number;
+  sortOrder?: SortOrder;
+  onSortChange?: (order: SortOrder) => void;
 }
 
 export function FranchiseFinanceTable({
@@ -40,6 +43,8 @@ export function FranchiseFinanceTable({
   onDelete,
   isAdmin,
   startIndex,
+  sortOrder = 'desc',
+  onSortChange,
 }: FranchiseFinanceTableProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -60,7 +65,17 @@ export function FranchiseFinanceTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-12">No</TableHead>
-            <TableHead className="min-w-[120px]">Tgl Closing</TableHead>
+            <TableHead className="min-w-[120px]">
+              {onSortChange ? (
+                <DateSortToggle
+                  label="Tgl Closing"
+                  sortOrder={sortOrder}
+                  onSortChange={onSortChange}
+                />
+              ) : (
+                <span>Tgl Closing</span>
+              )}
+            </TableHead>
             <TableHead className="min-w-[200px]">Detail Order</TableHead>
             <TableHead className="min-w-[120px]">No. Order</TableHead>
             <TableHead className="min-w-[150px]">Franchise</TableHead>
