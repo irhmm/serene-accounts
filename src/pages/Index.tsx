@@ -14,6 +14,7 @@ import {
   TransactionType, 
   ExpenseStatus 
 } from "@/types/transaction";
+import { SortOrder } from "@/components/ui/date-sort-toggle";
 import { 
   Plus, 
   TrendingUp, 
@@ -66,6 +67,7 @@ const Index = () => {
   const [statusFilter, setStatusFilter] = useState<ExpenseStatus | 'all'>('all');
   const [monthFilter, setMonthFilter] = useState<number | 'all'>('all');
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all');
+  const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -266,6 +268,8 @@ const Index = () => {
             onEdit={isAdmin ? handleEditTransaction : () => {}}
             onDelete={isAdmin ? handleDeleteTransaction : () => {}}
             isAdmin={isAdmin}
+            sortOrder={dateSortOrder}
+            onSortChange={setDateSortOrder}
           />
         </section>
 

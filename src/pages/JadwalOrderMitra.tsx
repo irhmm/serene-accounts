@@ -12,6 +12,7 @@ import { useMitraOrders } from '@/hooks/useMitraOrders';
 import { useWorkers } from '@/hooks/useWorkers';
 import { useAuth } from '@/hooks/useAuth';
 import { MitraOrder } from '@/types/mitraOrder';
+import { SortOrder } from '@/components/ui/date-sort-toggle';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -42,6 +43,7 @@ export default function JadwalOrderMitra() {
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
+  const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
 
   // No auth check - this page is publicly accessible (read-only for non-admin)
 
@@ -63,7 +65,7 @@ export default function JadwalOrderMitra() {
 
   // Filter orders based on search and filters
   const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
+    const filtered = orders.filter((order) => {
       const matchesSearch = searchTerm === '' || 
         order.nomorOrder.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.namaPjFreelance.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,7 +85,14 @@ export default function JadwalOrderMitra() {
 
       return matchesSearch && matchesStatus && matchesPayment && matchesMonth && matchesYear;
     });
-  }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter]);
+
+    // Sort by tanggalStart
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.tanggalStart).getTime();
+      const dateB = new Date(b.tanggalStart).getTime();
+      return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter, dateSortOrder]);
 
   const handleAddOrder = () => {
     setEditingOrder(null);
@@ -192,6 +201,8 @@ export default function JadwalOrderMitra() {
             onDelete={(order) => setDeletingOrder(order)}
             currentPage={currentPage}
             perPage={perPage}
+            sortOrder={dateSortOrder}
+            onSortChange={setDateSortOrder}
           />
         </div>
 

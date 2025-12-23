@@ -33,12 +33,15 @@ import {
   ExpenseStatus,
   TransactionType,
 } from "@/types/transaction";
+import { DateSortToggle, SortOrder } from "@/components/ui/date-sort-toggle";
 
 interface TransactionTableProps {
   transactions: Transaction[];
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
   isAdmin?: boolean;
+  sortOrder?: SortOrder;
+  onSortChange?: (order: SortOrder) => void;
 }
 
 const formatCurrency = (amount: number) => {
@@ -69,7 +72,14 @@ const getTypeBadgeVariant = (type: TransactionType) => {
   return transactionTypeColors[type] || 'bg-secondary text-secondary-foreground border-border';
 };
 
-export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = false }: TransactionTableProps) {
+export function TransactionTable({ 
+  transactions, 
+  onEdit, 
+  onDelete, 
+  isAdmin = false,
+  sortOrder = 'desc',
+  onSortChange
+}: TransactionTableProps) {
   // Group transactions by month/year
   const groupedTransactions = useMemo(() => {
     const groups: { [key: string]: Transaction[] } = {};
@@ -84,16 +94,20 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
     });
     
     return Object.entries(groups)
-      .sort(([a], [b]) => b.localeCompare(a))
+      .sort(([a], [b]) => sortOrder === 'desc' ? b.localeCompare(a) : a.localeCompare(b))
       .map(([key, items]) => ({
         key,
         month: parseInt(key.split('-')[1]),
         year: parseInt(key.split('-')[0]),
-        transactions: items,
+        transactions: items.sort((a, b) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+        }),
         totalIn: items.reduce((sum, t) => sum + t.amountIn, 0),
         totalOut: items.reduce((sum, t) => sum + t.amountOut, 0),
       }));
-  }, [transactions]);
+  }, [transactions, sortOrder]);
 
   if (transactions.length === 0) {
     return (
@@ -131,7 +145,17 @@ export function TransactionTable({ transactions, onEdit, onDelete, isAdmin = fal
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
                 <TableHead className="w-[50px] text-center font-semibold">No</TableHead>
-                <TableHead className="min-w-[100px] font-semibold">Tanggal</TableHead>
+                <TableHead className="min-w-[100px]">
+                  {onSortChange ? (
+                    <DateSortToggle
+                      label="Tanggal"
+                      sortOrder={sortOrder}
+                      onSortChange={onSortChange}
+                    />
+                  ) : (
+                    <span className="font-semibold">Tanggal</span>
+                  )}
+                </TableHead>
                 <TableHead className="min-w-[180px] font-semibold">Detail Transaksi</TableHead>
                 <TableHead className="min-w-[120px] font-semibold">Tipe</TableHead>
                 <TableHead className="min-w-[130px] font-semibold text-right">Jumlah Masuk (RP)</TableHead>

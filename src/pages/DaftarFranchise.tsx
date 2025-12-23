@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Loader2 } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -10,6 +10,7 @@ import { useFranchises } from "@/hooks/useFranchises";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Franchise } from "@/types/franchise";
+import { SortOrder } from "@/components/ui/date-sort-toggle";
 
 const DaftarFranchise = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const DaftarFranchise = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingFranchise, setEditingFranchise] = useState<Franchise | null>(null);
+  const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -38,6 +40,15 @@ const DaftarFranchise = () => {
       setEditingFranchise(null);
     };
   }, []);
+
+  // Sort franchises by kontrakMulai
+  const sortedFranchises = useMemo(() => {
+    return [...franchises].sort((a, b) => {
+      const dateA = new Date(a.kontrakMulai).getTime();
+      const dateB = new Date(b.kontrakMulai).getTime();
+      return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  }, [franchises, dateSortOrder]);
 
   const handleAddFranchise = () => {
     setEditingFranchise(null);
@@ -131,9 +142,11 @@ const DaftarFranchise = () => {
           </CardHeader>
           <CardContent>
             <FranchiseTable
-              franchises={franchises}
+              franchises={sortedFranchises}
               onEdit={handleEditFranchise}
               onDelete={handleDeleteFranchise}
+              sortOrder={dateSortOrder}
+              onSortChange={setDateSortOrder}
             />
           </CardContent>
         </Card>

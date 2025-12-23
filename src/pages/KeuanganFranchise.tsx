@@ -9,6 +9,7 @@ import { useFranchiseFinances } from '@/hooks/useFranchiseFinances';
 import { useFranchises } from '@/hooks/useFranchises';
 import { useWorkers } from '@/hooks/useWorkers';
 import { FranchiseFinance, FranchiseFinanceFormData } from '@/types/franchiseFinance';
+import { SortOrder } from '@/components/ui/date-sort-toggle';
 import { FranchiseFinanceTable } from '@/components/franchiseFinance/FranchiseFinanceTable';
 import { FranchiseFinanceForm } from '@/components/franchiseFinance/FranchiseFinanceForm';
 import { FranchiseFinanceSummaryCards } from '@/components/franchiseFinance/FranchiseFinanceSummaryCards';
@@ -42,6 +43,7 @@ export default function KeuanganFranchise() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
+  const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,7 +82,7 @@ export default function KeuanganFranchise() {
 
   // Filter finances
   const filteredFinances = useMemo(() => {
-    return finances.filter((finance) => {
+    const filtered = finances.filter((finance) => {
       // Search filter
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch =
@@ -102,7 +104,14 @@ export default function KeuanganFranchise() {
 
       return matchesSearch && matchesStatus && matchesMonth && matchesYear;
     });
-  }, [finances, searchTerm, statusFilter, monthFilter, yearFilter]);
+
+    // Sort by tanggalClosingOrder
+    return filtered.sort((a, b) => {
+      const dateA = a.tanggalClosingOrder.getTime();
+      const dateB = b.tanggalClosingOrder.getTime();
+      return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  }, [finances, searchTerm, statusFilter, monthFilter, yearFilter, dateSortOrder]);
 
   // Calculate totals from filtered data
   const totals = useMemo(() => {
@@ -215,6 +224,8 @@ export default function KeuanganFranchise() {
               onDelete={(id) => setDeleteId(id)}
               isAdmin={isAdmin}
               startIndex={startIndex}
+              sortOrder={dateSortOrder}
+              onSortChange={setDateSortOrder}
             />
 
             <div className="mt-4">

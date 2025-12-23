@@ -16,17 +16,22 @@ import {
   franchiseStatusLabels,
   franchiseStatusColors,
 } from "@/types/franchise";
+import { DateSortToggle, SortOrder } from "@/components/ui/date-sort-toggle";
 
 interface FranchiseTableProps {
   franchises: Franchise[];
   onEdit: (franchise: Franchise) => void;
   onDelete: (id: string) => void;
+  sortOrder?: SortOrder;
+  onSortChange?: (order: SortOrder) => void;
 }
 
 export const FranchiseTable = ({
   franchises,
   onEdit,
   onDelete,
+  sortOrder = 'desc',
+  onSortChange,
 }: FranchiseTableProps) => {
   const formatDate = (date: Date) => {
     return format(date, "dd MMM yyyy", { locale: id });
@@ -40,7 +45,17 @@ export const FranchiseTable = ({
             <TableHead className="w-12">No</TableHead>
             <TableHead>Nama Franchise</TableHead>
             <TableHead>Alamat</TableHead>
-            <TableHead>Jangka Waktu Kontrak</TableHead>
+            <TableHead>
+              {onSortChange ? (
+                <DateSortToggle
+                  label="Jangka Waktu Kontrak"
+                  sortOrder={sortOrder}
+                  onSortChange={onSortChange}
+                />
+              ) : (
+                <span>Jangka Waktu Kontrak</span>
+              )}
+            </TableHead>
             <TableHead>Keterangan</TableHead>
             <TableHead>Rekening</TableHead>
             <TableHead>Catatan</TableHead>
