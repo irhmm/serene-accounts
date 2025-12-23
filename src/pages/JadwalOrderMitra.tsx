@@ -43,7 +43,13 @@ export default function JadwalOrderMitra() {
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
+  const [dayFilter, setDayFilter] = useState('all');
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
+
+  // Reset dayFilter when month or year changes
+  useEffect(() => {
+    setDayFilter('all');
+  }, [monthFilter, yearFilter]);
 
   // No auth check - this page is publicly accessible (read-only for non-admin)
 
@@ -74,16 +80,20 @@ export default function JadwalOrderMitra() {
       const matchesStatus = statusFilter === 'all' || order.statusPengerjaan === statusFilter;
       const matchesPayment = paymentFilter === 'all' || order.statusPembayaran === paymentFilter;
 
-      // Month & Year filtering based on tanggalStart
+      // Month, Year & Day filtering based on tanggalStart
       let matchesMonth = true;
       let matchesYear = true;
+      let matchesDay = true;
       if (order.tanggalStart) {
         const orderDate = new Date(order.tanggalStart);
         matchesMonth = monthFilter === 'all' || (orderDate.getMonth() + 1) === parseInt(monthFilter);
         matchesYear = yearFilter === 'all' || orderDate.getFullYear() === parseInt(yearFilter);
+        if (dayFilter !== 'all' && monthFilter !== 'all' && yearFilter !== 'all') {
+          matchesDay = orderDate.getDate() === parseInt(dayFilter);
+        }
       }
 
-      return matchesSearch && matchesStatus && matchesPayment && matchesMonth && matchesYear;
+      return matchesSearch && matchesStatus && matchesPayment && matchesMonth && matchesYear && matchesDay;
     });
 
     // Sort by tanggalStart
@@ -92,7 +102,7 @@ export default function JadwalOrderMitra() {
       const dateB = new Date(b.tanggalStart).getTime();
       return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-  }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter, dateSortOrder]);
+  }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter, dayFilter, dateSortOrder]);
 
   const handleAddOrder = () => {
     setEditingOrder(null);
@@ -188,6 +198,8 @@ export default function JadwalOrderMitra() {
             onMonthFilterChange={setMonthFilter}
             yearFilter={yearFilter}
             onYearFilterChange={setYearFilter}
+            dayFilter={dayFilter}
+            onDayFilterChange={setDayFilter}
             availableYears={availableYears}
           />
         </div>

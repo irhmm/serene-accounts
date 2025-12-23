@@ -30,8 +30,15 @@ interface SearchFilterProps {
   onMonthFilterChange: (month: number | 'all') => void;
   yearFilter: number | 'all';
   onYearFilterChange: (year: number | 'all') => void;
+  dayFilter: number | 'all';
+  onDayFilterChange: (day: number | 'all') => void;
   availableYears: number[];
 }
+
+const getDaysInMonth = (month: number | 'all', year: number | 'all'): number => {
+  if (month === 'all' || year === 'all') return 0;
+  return new Date(year, month, 0).getDate();
+};
 
 export function SearchFilter({
   searchQuery,
@@ -44,8 +51,12 @@ export function SearchFilter({
   onMonthFilterChange,
   yearFilter,
   onYearFilterChange,
+  dayFilter,
+  onDayFilterChange,
   availableYears,
 }: SearchFilterProps) {
+  const showDayFilter = monthFilter !== 'all' && yearFilter !== 'all';
+  const daysInMonth = getDaysInMonth(monthFilter, yearFilter);
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col sm:flex-row gap-3">
@@ -118,6 +129,25 @@ export function SearchFilter({
             ))}
           </SelectContent>
         </Select>
+
+        {showDayFilter && (
+          <Select 
+            value={dayFilter.toString()} 
+            onValueChange={(v) => onDayFilterChange(v === 'all' ? 'all' : parseInt(v))}
+          >
+            <SelectTrigger className="w-full sm:w-[130px] input-focus">
+              <SelectValue placeholder="Tanggal" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="all">Semua Tanggal</SelectItem>
+              {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
+                <SelectItem key={day} value={day.toString()}>
+                  Tanggal {day}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
     </div>
   );
