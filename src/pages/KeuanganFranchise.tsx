@@ -43,7 +43,13 @@ export default function KeuanganFranchise() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
+  const [dayFilter, setDayFilter] = useState('all');
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
+
+  // Reset dayFilter when month or year changes
+  useEffect(() => {
+    setDayFilter('all');
+  }, [monthFilter, yearFilter]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -102,7 +108,13 @@ export default function KeuanganFranchise() {
       const orderYear = finance.tanggalClosingOrder.getFullYear().toString();
       const matchesYear = yearFilter === 'all' || orderYear === yearFilter;
 
-      return matchesSearch && matchesStatus && matchesMonth && matchesYear;
+      // Day filter
+      let matchesDay = true;
+      if (dayFilter !== 'all' && monthFilter !== 'all' && yearFilter !== 'all') {
+        matchesDay = finance.tanggalClosingOrder.getDate() === parseInt(dayFilter);
+      }
+
+      return matchesSearch && matchesStatus && matchesMonth && matchesYear && matchesDay;
     });
 
     // Sort by tanggalClosingOrder
@@ -111,7 +123,7 @@ export default function KeuanganFranchise() {
       const dateB = b.tanggalClosingOrder.getTime();
       return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-  }, [finances, searchTerm, statusFilter, monthFilter, yearFilter, dateSortOrder]);
+  }, [finances, searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, dateSortOrder]);
 
   // Calculate totals from filtered data
   const totals = useMemo(() => {
@@ -135,7 +147,7 @@ export default function KeuanganFranchise() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, monthFilter, yearFilter, itemsPerPage]);
+  }, [searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, itemsPerPage]);
 
   const handleEdit = (finance: FranchiseFinance) => {
     setEditingFinance(finance);
@@ -210,6 +222,8 @@ export default function KeuanganFranchise() {
           onMonthFilterChange={setMonthFilter}
           yearFilter={yearFilter}
           onYearFilterChange={setYearFilter}
+          dayFilter={dayFilter}
+          onDayFilterChange={setDayFilter}
           availableYears={availableYears}
         />
 

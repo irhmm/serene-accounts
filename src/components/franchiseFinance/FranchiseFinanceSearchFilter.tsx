@@ -17,8 +17,15 @@ interface FranchiseFinanceSearchFilterProps {
   onMonthFilterChange: (value: string) => void;
   yearFilter: string;
   onYearFilterChange: (value: string) => void;
+  dayFilter: string;
+  onDayFilterChange: (value: string) => void;
   availableYears: string[];
 }
+
+const getDaysInMonth = (month: string, year: string): number => {
+  if (month === 'all' || year === 'all') return 0;
+  return new Date(parseInt(year), parseInt(month), 0).getDate();
+};
 
 const months = [
   { value: 'all', label: 'Semua Bulan' },
@@ -45,8 +52,12 @@ export function FranchiseFinanceSearchFilter({
   onMonthFilterChange,
   yearFilter,
   onYearFilterChange,
+  dayFilter,
+  onDayFilterChange,
   availableYears,
 }: FranchiseFinanceSearchFilterProps) {
+  const showDayFilter = monthFilter !== 'all' && yearFilter !== 'all';
+  const daysInMonth = getDaysInMonth(monthFilter, yearFilter);
   return (
     <div className="flex flex-col sm:flex-row gap-4">
       <div className="relative flex-1">
@@ -96,6 +107,22 @@ export function FranchiseFinanceSearchFilter({
           ))}
         </SelectContent>
       </Select>
+
+      {showDayFilter && (
+        <Select value={dayFilter} onValueChange={onDayFilterChange}>
+          <SelectTrigger className="w-full sm:w-[130px]">
+            <SelectValue placeholder="Tanggal" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua Tanggal</SelectItem>
+            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
+              <SelectItem key={day} value={String(day)}>
+                Tanggal {day}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 }

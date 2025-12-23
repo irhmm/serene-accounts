@@ -25,8 +25,15 @@ interface OrderSearchFilterProps {
   onMonthFilterChange: (value: string) => void;
   yearFilter: string;
   onYearFilterChange: (value: string) => void;
+  dayFilter: string;
+  onDayFilterChange: (value: string) => void;
   availableYears: number[];
 }
+
+const getDaysInMonth = (month: string, year: string): number => {
+  if (month === 'all' || year === 'all') return 0;
+  return new Date(parseInt(year), parseInt(month), 0).getDate();
+};
 
 export function OrderSearchFilter({
   searchTerm,
@@ -39,8 +46,12 @@ export function OrderSearchFilter({
   onMonthFilterChange,
   yearFilter,
   onYearFilterChange,
+  dayFilter,
+  onDayFilterChange,
   availableYears,
 }: OrderSearchFilterProps) {
+  const showDayFilter = monthFilter !== 'all' && yearFilter !== 'all';
+  const daysInMonth = getDaysInMonth(monthFilter, yearFilter);
   return (
     <div className="bg-card rounded-lg border p-3 md:p-4 shadow-sm overflow-hidden">
       <div className="flex flex-col gap-3 md:gap-4">
@@ -88,6 +99,22 @@ export function OrderSearchFilter({
               ))}
             </SelectContent>
           </Select>
+
+          {showDayFilter && (
+            <Select value={dayFilter} onValueChange={onDayFilterChange}>
+              <SelectTrigger className="w-full sm:w-[130px]">
+                <SelectValue placeholder="Tanggal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Tanggal</SelectItem>
+                {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
+                  <SelectItem key={day} value={String(day)}>
+                    Tanggal {day}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           {/* Status Filters */}
           <div className="flex items-center gap-2 flex-1 sm:flex-none">

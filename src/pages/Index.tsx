@@ -67,9 +67,15 @@ const Index = () => {
   const [statusFilter, setStatusFilter] = useState<ExpenseStatus | 'all'>('all');
   const [monthFilter, setMonthFilter] = useState<number | 'all'>('all');
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all');
+  const [dayFilter, setDayFilter] = useState<number | 'all'>('all');
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Reset dayFilter when month or year changes
+  useEffect(() => {
+    setDayFilter('all');
+  }, [monthFilter, yearFilter]);
 
   // Get available years from transactions
   const availableYears = useMemo(() => {
@@ -89,14 +95,18 @@ const Index = () => {
       const matchesType = typeFilter === 'all' || t.type === typeFilter;
       const matchesStatus = statusFilter === 'all' || t.expenseStatus === statusFilter;
       
-      // Month and year filter
+      // Month, year and day filter
       const transactionDate = new Date(t.date);
       const matchesMonth = monthFilter === 'all' || (transactionDate.getMonth() + 1) === monthFilter;
       const matchesYear = yearFilter === 'all' || transactionDate.getFullYear() === yearFilter;
+      let matchesDay = true;
+      if (dayFilter !== 'all' && monthFilter !== 'all' && yearFilter !== 'all') {
+        matchesDay = transactionDate.getDate() === dayFilter;
+      }
       
-      return matchesSearch && matchesType && matchesStatus && matchesMonth && matchesYear;
+      return matchesSearch && matchesType && matchesStatus && matchesMonth && matchesYear && matchesDay;
     });
-  }, [transactions, searchQuery, typeFilter, statusFilter, monthFilter, yearFilter]);
+  }, [transactions, searchQuery, typeFilter, statusFilter, monthFilter, yearFilter, dayFilter]);
 
   // Calculate totals based on filtered transactions (per bulan/filter aktif)
   const totals = useMemo(() => {
@@ -257,6 +267,8 @@ const Index = () => {
             onMonthFilterChange={handleFilterChange(setMonthFilter)}
             yearFilter={yearFilter}
             onYearFilterChange={handleFilterChange(setYearFilter)}
+            dayFilter={dayFilter}
+            onDayFilterChange={handleFilterChange(setDayFilter)}
             availableYears={availableYears}
           />
         </section>
