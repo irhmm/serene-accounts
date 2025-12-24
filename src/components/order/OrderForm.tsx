@@ -78,6 +78,8 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const [statusPengerjaan, setStatusPengerjaan] = useState<WorkStatus>('not_started');
   const [statusPelunasan, setStatusPelunasan] = useState<SettlementStatus>('belum_lunas');
   const [catatanAdmin, setCatatanAdmin] = useState('');
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
 
   const isCustomType = selectedType === 'custom';
 
@@ -280,7 +282,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Tanggal Start</Label>
-                  <Popover>
+                  <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -297,7 +299,12 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                       <CalendarComponent
                         mode="single"
                         selected={tanggalStart}
-                        onSelect={(date) => date && setTanggalStart(date)}
+                        onSelect={(date) => {
+                          if (date) {
+                            setTanggalStart(date);
+                            setStartDateOpen(false);
+                          }
+                        }}
                         initialFocus
                         className="pointer-events-auto"
                       />
@@ -306,7 +313,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                 </div>
                 <div className="space-y-2">
                   <Label>Tanggal End</Label>
-                  <Popover>
+                  <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -323,7 +330,10 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                       <CalendarComponent
                         mode="single"
                         selected={tanggalEnd}
-                        onSelect={setTanggalEnd}
+                        onSelect={(date) => {
+                          setTanggalEnd(date);
+                          setEndDateOpen(false);
+                        }}
                         initialFocus
                         className="pointer-events-auto"
                       />

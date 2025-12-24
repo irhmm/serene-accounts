@@ -47,6 +47,8 @@ export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
   const [keterangan, setKeterangan] = useState<FranchiseStatus>("non_verified");
   const [rekening, setRekening] = useState("");
   const [catatan, setCatatan] = useState("");
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
 
   useEffect(() => {
     if (editingFranchise) {
@@ -119,7 +121,7 @@ export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Kontrak Mulai *</Label>
-              <Popover>
+              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -136,7 +138,12 @@ export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
                   <Calendar
                     mode="single"
                     selected={kontrakMulai}
-                    onSelect={(date) => date && setKontrakMulai(date)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setKontrakMulai(date);
+                        setStartDateOpen(false);
+                      }
+                    }}
                     initialFocus
                     className="pointer-events-auto"
                   />
@@ -146,7 +153,7 @@ export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
 
             <div className="space-y-2">
               <Label>Kontrak Berakhir *</Label>
-              <Popover>
+              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -163,7 +170,12 @@ export const FranchiseForm = forwardRef<HTMLDivElement, FranchiseFormProps>(({
                   <Calendar
                     mode="single"
                     selected={kontrakBerakhir}
-                    onSelect={(date) => date && setKontrakBerakhir(date)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setKontrakBerakhir(date);
+                        setEndDateOpen(false);
+                      }
+                    }}
                     initialFocus
                     className="pointer-events-auto"
                   />
