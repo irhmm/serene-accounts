@@ -40,7 +40,7 @@ export function useTransactions() {
     const { data, error } = await supabase
       .from('transactions')
       .select('*')
-      .order('tanggal', { ascending: true });
+      .order('created_at', { ascending: false });
 
     if (error) {
       toast.error('Gagal memuat data transaksi');
