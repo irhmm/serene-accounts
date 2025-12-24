@@ -55,9 +55,9 @@ export const transactionTypeLabels: Record<TransactionType, string> = {
 
 export const transactionTypeColors: Record<TransactionType, string> = {
   pemasukan_dp: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-  pemasukan_pelunasan: 'bg-green-100 text-green-700 border-green-300',
+  pemasukan_pelunasan: 'bg-sky-100 text-sky-700 border-sky-300',
   pengeluaran_fee_mitra: 'bg-red-100 text-red-700 border-red-300',
-  pengeluaran_fee_admin: 'bg-rose-100 text-rose-700 border-rose-300',
+  pengeluaran_fee_admin: 'bg-violet-100 text-violet-700 border-violet-300',
   pengeluaran_iklan: 'bg-pink-100 text-pink-700 border-pink-300',
   pengeluaran_event: 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300',
   refund: 'bg-purple-100 text-purple-700 border-purple-300',
