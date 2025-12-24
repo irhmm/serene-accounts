@@ -60,6 +60,7 @@ export function TransactionForm({
   const [freelanceCategory, setFreelanceCategory] = useState<FreelanceCategory>("");
   const [expenseStatus, setExpenseStatus] = useState<ExpenseStatus>("pending");
   const [notes, setNotes] = useState("");
+  const [datePopoverOpen, setDatePopoverOpen] = useState(false);
 
   // Sync form state when editTransaction changes or dialog opens
   useEffect(() => {
@@ -147,7 +148,7 @@ export function TransactionForm({
             {/* Tanggal */}
             <div className="space-y-2">
               <Label htmlFor="date">Tanggal</Label>
-              <Popover>
+              <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -164,7 +165,12 @@ export function TransactionForm({
                   <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={(d) => d && setDate(d)}
+                    onSelect={(d) => {
+                      if (d) {
+                        setDate(d);
+                        setDatePopoverOpen(false);
+                      }
+                    }}
                     initialFocus
                   />
                 </PopoverContent>

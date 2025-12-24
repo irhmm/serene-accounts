@@ -67,6 +67,8 @@ export function FranchiseFinanceForm({
     keuntunganBersih: 0,
     komisiMitra: 0,
   });
+  const [closingDateOpen, setClosingDateOpen] = useState(false);
+  const [paymentDateOpen, setPaymentDateOpen] = useState(false);
 
   const form = useForm<FranchiseFinanceFormData>({
     defaultValues: {
@@ -155,7 +157,7 @@ export function FranchiseFinanceForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tanggal Closing Order</FormLabel>
-                    <Popover>
+                    <Popover open={closingDateOpen} onOpenChange={setClosingDateOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -174,8 +176,12 @@ export function FranchiseFinanceForm({
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            setClosingDateOpen(false);
+                          }}
                           initialFocus
+                          className="pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -358,7 +364,7 @@ export function FranchiseFinanceForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tanggal Pembayaran ke Franchisee</FormLabel>
-                    <Popover>
+                    <Popover open={paymentDateOpen} onOpenChange={setPaymentDateOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -377,8 +383,12 @@ export function FranchiseFinanceForm({
                         <Calendar
                           mode="single"
                           selected={field.value || undefined}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            setPaymentDateOpen(false);
+                          }}
                           initialFocus
+                          className="pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
