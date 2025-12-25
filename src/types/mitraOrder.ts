@@ -60,6 +60,7 @@ export interface MitraOrder {
   namaPjFreelance: string;
   catatan: string | null;
   tanggalStart: Date;
+  tanggalDeadline: Date | null;
   statusPembayaran: PaymentStatus;
   totalDp: number;
   kekurangan: number;

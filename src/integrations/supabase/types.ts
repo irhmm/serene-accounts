@@ -191,6 +191,7 @@ export type Database = {
           status_pelunasan: string
           status_pembayaran: string
           status_pengerjaan: string
+          tanggal_deadline: string | null
           tanggal_end: string | null
           tanggal_start: string
           total_dp: number
@@ -212,6 +213,7 @@ export type Database = {
           status_pelunasan?: string
           status_pembayaran?: string
           status_pengerjaan?: string
+          tanggal_deadline?: string | null
           tanggal_end?: string | null
           tanggal_start?: string
           total_dp?: number
@@ -233,6 +235,7 @@ export type Database = {
           status_pelunasan?: string
           status_pembayaran?: string
           status_pengerjaan?: string
+          tanggal_deadline?: string | null
           tanggal_end?: string | null
           tanggal_start?: string
           total_dp?: number

@@ -102,6 +102,7 @@ export function OrderTable({
                   <span className="font-semibold">Tgl Start</span>
                 )}
               </TableHead>
+              <TableHead className="min-w-[100px] font-semibold">Deadline</TableHead>
               <TableHead className="min-w-[110px] font-semibold">Pembayaran</TableHead>
               <TableHead className="min-w-[110px] text-right font-semibold">Total DP</TableHead>
               <TableHead className="min-w-[120px] text-right font-semibold">Total Bayar</TableHead>
@@ -148,6 +149,11 @@ export function OrderTable({
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {format(order.tanggalStart, 'dd MMM yy', { locale: id })}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {order.tanggalDeadline 
+                    ? format(order.tanggalDeadline, 'dd MMM yy', { locale: id }) 
+                    : '-'}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className={paymentStatusColors[order.statusPembayaran]}>
