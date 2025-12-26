@@ -74,13 +74,11 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
   const [statusPembayaran, setStatusPembayaran] = useState<PaymentStatus>('belum_bayar');
   const [totalDp, setTotalDp] = useState(0);
   const [totalPembayaran, setTotalPembayaran] = useState(0);
-  const [tanggalEnd, setTanggalEnd] = useState<Date | undefined>(undefined);
   const [tanggalDeadline, setTanggalDeadline] = useState<Date | undefined>(undefined);
   const [statusPengerjaan, setStatusPengerjaan] = useState<WorkStatus>('not_started');
   const [statusPelunasan, setStatusPelunasan] = useState<SettlementStatus>('belum_lunas');
   const [catatanAdmin, setCatatanAdmin] = useState('');
   const [startDateOpen, setStartDateOpen] = useState(false);
-  const [endDateOpen, setEndDateOpen] = useState(false);
   const [deadlineDateOpen, setDeadlineDateOpen] = useState(false);
 
   const isCustomType = selectedType === 'custom';
@@ -109,7 +107,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       setStatusPembayaran(initialData.statusPembayaran);
       setTotalDp(initialData.totalDp);
       setTotalPembayaran(initialData.totalPembayaran);
-      setTanggalEnd(initialData.tanggalEnd || undefined);
       setTanggalDeadline(initialData.tanggalDeadline || undefined);
       setStatusPengerjaan(initialData.statusPengerjaan || 'not_started');
       setStatusPelunasan(initialData.statusPelunasan);
@@ -130,7 +127,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
     setStatusPembayaran('belum_bayar');
     setTotalDp(0);
     setTotalPembayaran(0);
-    setTanggalEnd(undefined);
     setTanggalDeadline(undefined);
     setStatusPengerjaan('not_started');
     setStatusPelunasan('belum_lunas');
@@ -153,7 +149,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
       kekurangan,
       totalPembayaran,
       feeFreelance,
-      tanggalEnd: tanggalEnd || null,
+      tanggalEnd: null,
       statusPengerjaan,
       statusPelunasan,
       catatanAdmin: catatanAdmin || null,
@@ -284,7 +280,7 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
             {/* Section 3: Jadwal */}
             <div className="space-y-4">
               <SectionHeader icon={<Calendar className="h-4 w-4" />} title="Jadwal" />
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Tanggal Start</Label>
                   <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
@@ -338,35 +334,6 @@ export function OrderForm({ open, onClose, onSubmit, initialData, workers }: Ord
                         onSelect={(date) => {
                           setTanggalDeadline(date);
                           setDeadlineDateOpen(false);
-                        }}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label>Tanggal End</Label>
-                  <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          'w-full justify-start text-left font-normal',
-                          !tanggalEnd && 'text-muted-foreground'
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {tanggalEnd ? format(tanggalEnd, 'dd MMM yyyy') : 'Pilih tanggal'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarComponent
-                        mode="single"
-                        selected={tanggalEnd}
-                        onSelect={(date) => {
-                          setTanggalEnd(date);
-                          setEndDateOpen(false);
                         }}
                         initialFocus
                         className="pointer-events-auto"
