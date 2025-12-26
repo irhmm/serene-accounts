@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Franchise, FranchiseStatus } from '@/types/franchise';
+import { format } from 'date-fns';
 
 export const useFranchises = () => {
   const [franchises, setFranchises] = useState<Franchise[]>([]);
@@ -22,8 +23,8 @@ export const useFranchises = () => {
           id: item.id,
           namaFranchise: item.nama_franchise,
           alamat: item.alamat,
-          kontrakMulai: new Date(item.kontrak_mulai),
-          kontrakBerakhir: new Date(item.kontrak_berakhir),
+          kontrakMulai: new Date(item.kontrak_mulai + 'T00:00:00'),
+          kontrakBerakhir: new Date(item.kontrak_berakhir + 'T00:00:00'),
           keterangan: item.keterangan as FranchiseStatus,
           rekening: item.rekening,
           catatan: item.catatan,
@@ -42,8 +43,8 @@ export const useFranchises = () => {
     const { error } = await supabase.from('franchises').insert({
       nama_franchise: franchise.namaFranchise,
       alamat: franchise.alamat,
-      kontrak_mulai: franchise.kontrakMulai.toISOString().split('T')[0],
-      kontrak_berakhir: franchise.kontrakBerakhir.toISOString().split('T')[0],
+      kontrak_mulai: format(franchise.kontrakMulai, 'yyyy-MM-dd'),
+      kontrak_berakhir: format(franchise.kontrakBerakhir, 'yyyy-MM-dd'),
       keterangan: franchise.keterangan,
       rekening: franchise.rekening,
       catatan: franchise.catatan,
@@ -62,8 +63,8 @@ export const useFranchises = () => {
       .update({
         nama_franchise: franchise.namaFranchise,
         alamat: franchise.alamat,
-        kontrak_mulai: franchise.kontrakMulai.toISOString().split('T')[0],
-        kontrak_berakhir: franchise.kontrakBerakhir.toISOString().split('T')[0],
+        kontrak_mulai: format(franchise.kontrakMulai, 'yyyy-MM-dd'),
+        kontrak_berakhir: format(franchise.kontrakBerakhir, 'yyyy-MM-dd'),
         keterangan: franchise.keterangan,
         rekening: franchise.rekening,
         catatan: franchise.catatan,

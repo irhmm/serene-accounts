@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MitraOrder, OrderType, PaymentStatus, SettlementStatus, WorkStatus } from '@/types/mitraOrder';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 export const useMitraOrders = () => {
   const [orders, setOrders] = useState<MitraOrder[]>([]);
@@ -69,14 +70,14 @@ export const useMitraOrders = () => {
         type_order: order.typeOrder,
         nama_pj_freelance: order.namaPjFreelance,
         catatan: order.catatan,
-        tanggal_start: order.tanggalStart.toISOString().split('T')[0],
-        tanggal_deadline: order.tanggalDeadline ? order.tanggalDeadline.toISOString().split('T')[0] : null,
+        tanggal_start: format(order.tanggalStart, 'yyyy-MM-dd'),
+        tanggal_deadline: order.tanggalDeadline ? format(order.tanggalDeadline, 'yyyy-MM-dd') : null,
         status_pembayaran: order.statusPembayaran,
         total_dp: order.totalDp,
         kekurangan: order.kekurangan,
         total_pembayaran: order.totalPembayaran,
         fee_freelance: order.feeFreelance,
-        tanggal_end: order.tanggalEnd ? order.tanggalEnd.toISOString().split('T')[0] : null,
+        tanggal_end: order.tanggalEnd ? format(order.tanggalEnd, 'yyyy-MM-dd') : null,
         status_pengerjaan: order.statusPengerjaan,
         status_pelunasan: order.statusPelunasan,
         catatan_admin: order.catatanAdmin,
@@ -102,14 +103,14 @@ export const useMitraOrders = () => {
           type_order: order.typeOrder,
           nama_pj_freelance: order.namaPjFreelance,
           catatan: order.catatan,
-          tanggal_start: order.tanggalStart.toISOString().split('T')[0],
-          tanggal_deadline: order.tanggalDeadline ? order.tanggalDeadline.toISOString().split('T')[0] : null,
+          tanggal_start: format(order.tanggalStart, 'yyyy-MM-dd'),
+          tanggal_deadline: order.tanggalDeadline ? format(order.tanggalDeadline, 'yyyy-MM-dd') : null,
           status_pembayaran: order.statusPembayaran,
           total_dp: order.totalDp,
           kekurangan: order.kekurangan,
           total_pembayaran: order.totalPembayaran,
           fee_freelance: order.feeFreelance,
-          tanggal_end: order.tanggalEnd ? order.tanggalEnd.toISOString().split('T')[0] : null,
+          tanggal_end: order.tanggalEnd ? format(order.tanggalEnd, 'yyyy-MM-dd') : null,
           status_pengerjaan: order.statusPengerjaan,
           status_pelunasan: order.statusPelunasan,
           catatan_admin: order.catatanAdmin,

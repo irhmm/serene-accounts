@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Transaction, TransactionType, FreelanceCategory, ExpenseStatus } from '@/types/transaction';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 interface DbTransaction {
   id: string;
@@ -20,7 +21,7 @@ interface DbTransaction {
 
 const mapDbToTransaction = (db: DbTransaction): Transaction => ({
   id: db.id,
-  date: new Date(db.tanggal),
+  date: new Date(db.tanggal + 'T00:00:00'),
   detail: db.detail,
   type: db.type as TransactionType,
   amountIn: db.jumlah_masuk_dp,
@@ -60,7 +61,7 @@ export function useTransactions() {
     const rowBalance = transaction.amountIn - transaction.amountOut;
 
     const { error } = await supabase.from('transactions').insert({
-      tanggal: transaction.date.toISOString().split('T')[0],
+      tanggal: format(transaction.date, 'yyyy-MM-dd'),
       detail: transaction.detail,
       type: transaction.type,
       jumlah_masuk_dp: transaction.amountIn,
@@ -87,7 +88,7 @@ export function useTransactions() {
     const rowBalance = transaction.amountIn - transaction.amountOut;
 
     const { error } = await supabase.from('transactions').update({
-      tanggal: transaction.date.toISOString().split('T')[0],
+      tanggal: format(transaction.date, 'yyyy-MM-dd'),
       detail: transaction.detail,
       type: transaction.type,
       jumlah_masuk_dp: transaction.amountIn,
