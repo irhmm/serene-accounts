@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { FranchiseFinance, FranchiseFinanceFormData } from '@/types/franchiseFinance';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 export function useFranchiseFinances() {
   const [finances, setFinances] = useState<FranchiseFinance[]>([]);
@@ -33,7 +34,7 @@ export function useFranchiseFinances() {
         const calculated = calculateFields(item.total_payment_cust);
         return {
           id: item.id,
-          tanggalClosingOrder: new Date(item.tanggal_closing_order),
+          tanggalClosingOrder: new Date(item.tanggal_closing_order + 'T00:00:00'),
           detailOrder: item.detail_order,
           nomorOrder: item.nomor_order,
           franchiseId: item.franchise_id,
@@ -46,7 +47,7 @@ export function useFranchiseFinances() {
           keuntunganBersih: calculated.keuntunganBersih,
           komisiMitra: calculated.komisiMitra,
           tanggalPembayaranFranchisee: item.tanggal_pembayaran_franchisee 
-            ? new Date(item.tanggal_pembayaran_franchisee) 
+            ? new Date(item.tanggal_pembayaran_franchisee + 'T00:00:00') 
             : null,
           statusPembayaran: item.status_pembayaran,
           statusPengerjaan: item.status_pengerjaan,
@@ -68,7 +69,7 @@ export function useFranchiseFinances() {
   const addFinance = async (formData: FranchiseFinanceFormData) => {
     try {
       const { error } = await supabase.from('franchise_finances').insert({
-        tanggal_closing_order: formData.tanggalClosingOrder.toISOString().split('T')[0],
+        tanggal_closing_order: format(formData.tanggalClosingOrder, 'yyyy-MM-dd'),
         detail_order: formData.detailOrder,
         nomor_order: formData.nomorOrder,
         franchise_id: formData.franchiseId || null,
@@ -76,7 +77,7 @@ export function useFranchiseFinances() {
         status_kelengkapan: formData.statusKelengkapan,
         total_payment_cust: formData.totalPaymentCust,
         tanggal_pembayaran_franchisee: formData.tanggalPembayaranFranchisee 
-          ? formData.tanggalPembayaranFranchisee.toISOString().split('T')[0] 
+          ? format(formData.tanggalPembayaranFranchisee, 'yyyy-MM-dd') 
           : null,
         status_pembayaran: formData.statusPembayaran,
         status_pengerjaan: formData.statusPengerjaan,
@@ -100,7 +101,7 @@ export function useFranchiseFinances() {
       const { error } = await supabase
         .from('franchise_finances')
         .update({
-          tanggal_closing_order: formData.tanggalClosingOrder.toISOString().split('T')[0],
+          tanggal_closing_order: format(formData.tanggalClosingOrder, 'yyyy-MM-dd'),
           detail_order: formData.detailOrder,
           nomor_order: formData.nomorOrder,
           franchise_id: formData.franchiseId || null,
@@ -108,7 +109,7 @@ export function useFranchiseFinances() {
           status_kelengkapan: formData.statusKelengkapan,
           total_payment_cust: formData.totalPaymentCust,
           tanggal_pembayaran_franchisee: formData.tanggalPembayaranFranchisee 
-            ? formData.tanggalPembayaranFranchisee.toISOString().split('T')[0] 
+            ? format(formData.tanggalPembayaranFranchisee, 'yyyy-MM-dd') 
             : null,
           status_pembayaran: formData.statusPembayaran,
           status_pengerjaan: formData.statusPengerjaan,
