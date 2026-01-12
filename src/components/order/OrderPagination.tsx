@@ -1,12 +1,3 @@
-import { useState } from 'react';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 import {
   Select,
   SelectContent,
@@ -14,9 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface OrderPaginationProps {
   currentPage: number;
@@ -33,14 +23,13 @@ export function OrderPagination({
   onPageChange,
   onPerPageChange,
 }: OrderPaginationProps) {
-  const [goToPage, setGoToPage] = useState('');
   const totalPages = Math.ceil(totalItems / perPage);
 
   const getPageNumbers = () => {
-    const pages: number[] = [];
-    const maxVisiblePages = 7;
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
 
-    if (totalPages <= maxVisiblePages) {
+    if (totalPages <= maxVisiblePages + 2) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
@@ -49,38 +38,24 @@ export function OrderPagination({
       pages.push(1);
 
       if (currentPage <= 3) {
-        // Near start: 1 2 3 4 ... last
-        for (let i = 2; i <= 4; i++) pages.push(i);
-        pages.push(-1); // ellipsis
+        // Near start: 1 2 3 ... last
+        for (let i = 2; i <= 3; i++) pages.push(i);
+        pages.push('...');
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
-        // Near end: 1 ... last-3 last-2 last-1 last
-        pages.push(-1);
-        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+        // Near end: 1 ... last-2 last-1 last
+        pages.push('...');
+        for (let i = totalPages - 2; i <= totalPages; i++) pages.push(i);
       } else {
-        // Middle: 1 ... current-1 current current+1 ... last
-        pages.push(-1);
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-        pages.push(-2); // second ellipsis
+        // Middle: 1 ... current ... last
+        pages.push('...');
+        pages.push(currentPage);
+        pages.push('...');
         pages.push(totalPages);
       }
     }
 
     return pages;
-  };
-
-  const handleGoToPage = () => {
-    const page = parseInt(goToPage, 10);
-    if (!isNaN(page) && page >= 1 && page <= totalPages) {
-      onPageChange(page);
-      setGoToPage('');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleGoToPage();
-    }
   };
 
   // Calculate display range
@@ -90,125 +65,85 @@ export function OrderPagination({
   if (totalItems === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4 mt-4">
-      {/* Info and per page selector */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Menampilkan</span>
-          <Select
-            value={perPage.toString()}
-            onValueChange={(value) => onPerPageChange(Number(value))}
-          >
-            <SelectTrigger className="w-[80px] h-8">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="25">25</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-              <SelectItem value="100">100</SelectItem>
-              <SelectItem value="200">200</SelectItem>
-            </SelectContent>
-          </Select>
-          <span className="hidden sm:inline">
-            | Halaman {currentPage} dari {totalPages} ({startItem}-{endItem} dari {totalItems} data)
-          </span>
-          <span className="sm:hidden">
-            dari {totalItems} data
-          </span>
-        </div>
-
-        {/* Go to page - only show if more than 7 pages */}
-        {totalPages > 7 && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Ke halaman:</span>
-            <Input
-              type="number"
-              min={1}
-              max={totalPages}
-              value={goToPage}
-              onChange={(e) => setGoToPage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={`1-${totalPages}`}
-              className="w-[80px] h-8"
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleGoToPage}
-              className="h-8"
-            >
-              Go
-            </Button>
-          </div>
-        )}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
+      {/* Left side - Info */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <span>Showing</span>
+        <Select
+          value={perPage.toString()}
+          onValueChange={(value) => onPerPageChange(Number(value))}
+        >
+          <SelectTrigger className="w-[70px] h-8 border-green-300 focus:ring-green-500">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="25">25</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+            <SelectItem value="200">200</SelectItem>
+          </SelectContent>
+        </Select>
+        <span>
+          {startItem} to {endItem} of {totalItems}
+        </span>
       </div>
 
-      {/* Pagination controls */}
-      <div className="flex justify-center">
-        <Pagination>
-          <PaginationContent className="flex-wrap gap-1">
-            {/* First page button */}
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onPageChange(1)}
-                disabled={currentPage === 1}
-                className="h-9 w-9"
-                aria-label="Halaman pertama"
+      {/* Right side - Pagination controls */}
+      <div className="flex items-center gap-1">
+        {/* Previous button */}
+        <button
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          className={cn(
+            "flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors",
+            currentPage === 1
+              ? "text-gray-300 cursor-not-allowed"
+              : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+          )}
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span className="hidden sm:inline">Previous</span>
+        </button>
+
+        {/* Page numbers */}
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((page, index) =>
+            page === '...' ? (
+              <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
+                ...
+              </span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => onPageChange(page as number)}
+                className={cn(
+                  "h-9 w-9 rounded-md flex items-center justify-center text-sm font-medium transition-colors",
+                  currentPage === page
+                    ? "bg-green-600 text-white"
+                    : "text-gray-600 hover:bg-green-50 hover:text-green-600"
+                )}
               >
-                <ChevronsLeft className="h-4 w-4" />
-              </Button>
-            </PaginationItem>
+                {page}
+              </button>
+            )
+          )}
+        </div>
 
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-                className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
-
-            {getPageNumbers().map((page, index) =>
-              page < 0 ? (
-                <PaginationItem key={`ellipsis-${index}`}>
-                  <span className="px-2 text-muted-foreground">...</span>
-                </PaginationItem>
-              ) : (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    onClick={() => onPageChange(page)}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
-
-            {/* Last page button */}
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onPageChange(totalPages)}
-                disabled={currentPage === totalPages}
-                className="h-9 w-9"
-                aria-label="Halaman terakhir"
-              >
-                <ChevronsRight className="h-4 w-4" />
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        {/* Next button */}
+        <button
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          className={cn(
+            "flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors",
+            currentPage === totalPages
+              ? "text-gray-300 cursor-not-allowed"
+              : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+          )}
+        >
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );
