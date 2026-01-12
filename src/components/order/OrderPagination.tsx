@@ -67,16 +67,16 @@ export function OrderPagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
       {/* Left side - Info */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
         <span>Showing</span>
         <Select
           value={perPage.toString()}
           onValueChange={(value) => onPerPageChange(Number(value))}
         >
-          <SelectTrigger className="w-[70px] h-8 border-green-300 focus:ring-green-500">
+          <SelectTrigger className="w-[70px] h-8 border-green-300 focus:ring-green-500 flex-shrink-0">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="z-50" position="popper" sideOffset={4}>
             <SelectItem value="10">10</SelectItem>
             <SelectItem value="25">25</SelectItem>
             <SelectItem value="50">50</SelectItem>
@@ -84,7 +84,7 @@ export function OrderPagination({
             <SelectItem value="200">200</SelectItem>
           </SelectContent>
         </Select>
-        <span>
+        <span className="whitespace-nowrap">
           {startItem} to {endItem} of {totalItems}
         </span>
       </div>
