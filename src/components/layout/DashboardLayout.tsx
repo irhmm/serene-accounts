@@ -57,7 +57,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <main className="flex-1 overflow-y-scroll overflow-x-hidden" style={{ scrollbarGutter: 'stable' }}>
             {children}
           </main>
         </div>
