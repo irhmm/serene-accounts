@@ -7,27 +7,14 @@ import { format } from 'date-fns';
 export const useMitraOrders = () => {
   const [orders, setOrders] = useState<MitraOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
 
-  const fetchOrders = useCallback(async (page: number = 1, perPage: number = 10) => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
-      // Get total count
-      const { count } = await supabase
-        .from('mitra_orders')
-        .select('*', { count: 'exact', head: true });
-
-      setTotalCount(count || 0);
-
-      // Get paginated data
-      const from = (page - 1) * perPage;
-      const to = from + perPage - 1;
-
       const { data, error } = await supabase
         .from('mitra_orders')
         .select('*')
-        .order('created_at', { ascending: false })
-        .range(from, to);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -148,7 +135,6 @@ export const useMitraOrders = () => {
   return {
     orders,
     loading,
-    totalCount,
     fetchOrders,
     addOrder,
     updateOrder,

@@ -1,10 +1,11 @@
 import { ClipboardList, Clock, Wallet, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { MitraOrder } from '@/types/mitraOrder';
 
 interface OrderSummaryCardsProps {
-  orders: MitraOrder[];
-  totalCount: number;
+  totalOrders: number;
+  ordersInProgress: number;
+  totalPendapatan: number;
+  totalFeeMitra: number;
   isAdmin?: boolean;
 }
 
@@ -16,15 +17,18 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export function OrderSummaryCards({ orders, totalCount, isAdmin = false }: OrderSummaryCardsProps) {
-  const ordersInProgress = orders.filter((o) => o.statusPengerjaan === 'on_progress').length;
-  const totalPendapatan = orders.reduce((sum, o) => sum + o.totalPembayaran, 0);
-  const totalFeeMitra = orders.reduce((sum, o) => sum + o.feeFreelance, 0);
+export function OrderSummaryCards({ 
+  totalOrders, 
+  ordersInProgress, 
+  totalPendapatan, 
+  totalFeeMitra, 
+  isAdmin = false 
+}: OrderSummaryCardsProps) {
 
   const allCards = [
     {
       title: 'Total Orders',
-      value: totalCount.toString(),
+      value: totalOrders.toString(),
       icon: ClipboardList,
       color: 'text-primary',
       bgColor: 'bg-primary/10',
