@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function JadwalOrderMitra() {
-  const { orders, loading, totalCount, fetchOrders, addOrder, updateOrder, deleteOrder } = useMitraOrders();
+  const { orders, loading, fetchOrders, addOrder, updateOrder, deleteOrder } = useMitraOrders();
   const { workers } = useWorkers();
   const { user, isAdmin, isFranchise, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -51,13 +51,12 @@ export default function JadwalOrderMitra() {
     setDayFilter('all');
   }, [monthFilter, yearFilter]);
 
-  // No auth check - this page is publicly accessible (read-only for non-admin)
-
+  // Fetch all orders on mount
   useEffect(() => {
-    fetchOrders(currentPage, perPage);
-  }, [currentPage, perPage, fetchOrders]);
+    fetchOrders();
+  }, [fetchOrders]);
 
-  // Calculate available years from orders
+  // Calculate available years from all orders
   const availableYears = useMemo(() => {
     const years = new Set<number>();
     orders.forEach((order) => {
@@ -69,7 +68,7 @@ export default function JadwalOrderMitra() {
     return Array.from(years).sort((a, b) => b - a);
   }, [orders]);
 
-  // Filter orders based on search and filters
+  // Filter orders based on search and filters (from ALL data)
   const filteredOrders = useMemo(() => {
     const filtered = orders.filter((order) => {
       const matchesSearch = searchTerm === '' || 
@@ -104,6 +103,25 @@ export default function JadwalOrderMitra() {
     });
   }, [orders, searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter, dayFilter, dateSortOrder]);
 
+  // Calculate summary from filtered orders
+  const summaryData = useMemo(() => ({
+    totalOrders: filteredOrders.length,
+    ordersInProgress: filteredOrders.filter((o) => o.statusPengerjaan === 'on_progress').length,
+    totalPendapatan: filteredOrders.reduce((sum, o) => sum + o.totalPembayaran, 0),
+    totalFeeMitra: filteredOrders.reduce((sum, o) => sum + o.feeFreelance, 0),
+  }), [filteredOrders]);
+
+  // Frontend pagination - slice filtered orders
+  const paginatedOrders = useMemo(() => {
+    const startIndex = (currentPage - 1) * perPage;
+    return filteredOrders.slice(startIndex, startIndex + perPage);
+  }, [filteredOrders, currentPage, perPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, paymentFilter, monthFilter, yearFilter, dayFilter]);
+
   const handleAddOrder = () => {
     setEditingOrder(null);
     setShowForm(true);
@@ -129,7 +147,7 @@ export default function JadwalOrderMitra() {
 
     if (success) {
       handleCloseForm();
-      fetchOrders(currentPage, perPage);
+      fetchOrders();
     }
   };
 
@@ -137,7 +155,7 @@ export default function JadwalOrderMitra() {
     if (!deletingOrder) return;
     const success = await deleteOrder(deletingOrder.id);
     if (success) {
-      fetchOrders(currentPage, perPage);
+      fetchOrders();
     }
     setDeletingOrder(null);
   };
@@ -180,12 +198,18 @@ export default function JadwalOrderMitra() {
           )}
         </div>
 
-        {/* Summary Cards - isolated from table scroll */}
+        {/* Summary Cards - shows summary from filtered data */}
         <div className="overflow-hidden">
-          <OrderSummaryCards orders={orders} totalCount={totalCount} isAdmin={isAdmin} />
+          <OrderSummaryCards 
+            totalOrders={summaryData.totalOrders}
+            ordersInProgress={summaryData.ordersInProgress}
+            totalPendapatan={summaryData.totalPendapatan}
+            totalFeeMitra={summaryData.totalFeeMitra}
+            isAdmin={isAdmin} 
+          />
         </div>
 
-        {/* Search & Filter - isolated from table scroll */}
+        {/* Search & Filter */}
         <div className="overflow-hidden">
           <OrderSearchFilter
             searchTerm={searchTerm}
@@ -204,10 +228,10 @@ export default function JadwalOrderMitra() {
           />
         </div>
 
-        {/* Table - only this section scrolls horizontally */}
+        {/* Table - displays paginated orders */}
         <div className="w-full min-w-0">
           <OrderTable
-            orders={filteredOrders}
+            orders={paginatedOrders}
             isAdmin={isAdmin}
             onEdit={handleEditOrder}
             onDelete={(order) => setDeletingOrder(order)}
@@ -218,10 +242,10 @@ export default function JadwalOrderMitra() {
           />
         </div>
 
-        {/* Pagination */}
+        {/* Pagination - uses filtered total */}
         <OrderPagination
           currentPage={currentPage}
-          totalItems={totalCount}
+          totalItems={filteredOrders.length}
           perPage={perPage}
           onPageChange={handlePageChange}
           onPerPageChange={handlePerPageChange}
