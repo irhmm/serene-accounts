@@ -229,7 +229,7 @@ export default function JadwalOrderMitra() {
         </div>
 
         {/* Table - displays paginated orders */}
-        <div className="w-full min-w-0">
+        <div className="w-full min-w-0 min-h-[500px]">
           <OrderTable
             orders={paginatedOrders}
             isAdmin={isAdmin}
