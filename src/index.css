@@ -108,6 +108,13 @@
     padding-right: 0 !important;
   }
 
+  /* Neutralize margin-right and scrollbar gap from react-remove-scroll-bar */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    --removed-body-scroll-bar-size: 0px !important;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
   }
