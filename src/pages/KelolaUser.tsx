@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { UserTable } from '@/components/userManagement/UserTable';
 import { UserForm } from '@/components/userManagement/UserForm';
+import { TablePagination } from '@/components/ui/table-pagination';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserManagement } from '@/hooks/useUserManagement';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,10 @@ export default function KelolaUser() {
   const navigate = useNavigate();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { users, isLoading, fetchUsers, createUser, deleteUser, resetPassword } = useUserManagement();
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -33,6 +38,22 @@ export default function KelolaUser() {
       fetchUsers();
     }
   }, [user, isAdmin, fetchUsers]);
+
+  // Paginate users
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * perPage;
+    return users.slice(startIndex, startIndex + perPage);
+  }, [users, currentPage, perPage]);
+
+  // Reset page when data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [users.length]);
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
+  };
 
   if (loading) {
     return (
@@ -76,10 +97,17 @@ export default function KelolaUser() {
           </CardHeader>
           <CardContent>
             <UserTable
-              users={users}
+              users={paginatedUsers}
               isLoading={isLoading}
               onDelete={deleteUser}
               onResetPassword={resetPassword}
+            />
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={users.length}
+              perPage={perPage}
+              onPageChange={setCurrentPage}
+              onPerPageChange={handlePerPageChange}
             />
           </CardContent>
         </Card>

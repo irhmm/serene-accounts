@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FranchiseTable } from "@/components/franchise/FranchiseTable";
 import { FranchiseForm } from "@/components/franchise/FranchiseForm";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { useFranchises } from "@/hooks/useFranchises";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,10 @@ const DaftarFranchise = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingFranchise, setEditingFranchise] = useState<Franchise | null>(null);
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -49,6 +54,17 @@ const DaftarFranchise = () => {
       return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
   }, [franchises, dateSortOrder]);
+
+  // Paginate franchises
+  const paginatedFranchises = useMemo(() => {
+    const startIndex = (currentPage - 1) * perPage;
+    return sortedFranchises.slice(startIndex, startIndex + perPage);
+  }, [sortedFranchises, currentPage, perPage]);
+
+  // Reset page when data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [franchises.length]);
 
   const handleAddFranchise = () => {
     setEditingFranchise(null);
@@ -107,6 +123,11 @@ const DaftarFranchise = () => {
     }
   };
 
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
+  };
+
   if (authLoading || loading) {
     return (
       <DashboardLayout>
@@ -142,11 +163,18 @@ const DaftarFranchise = () => {
           </CardHeader>
           <CardContent>
             <FranchiseTable
-              franchises={sortedFranchises}
+              franchises={paginatedFranchises}
               onEdit={handleEditFranchise}
               onDelete={handleDeleteFranchise}
               sortOrder={dateSortOrder}
               onSortChange={setDateSortOrder}
+            />
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={sortedFranchises.length}
+              perPage={perPage}
+              onPageChange={setCurrentPage}
+              onPerPageChange={handlePerPageChange}
             />
           </CardContent>
         </Card>

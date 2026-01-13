@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { TablePagination } from '@/components/ui/table-pagination';
 import { useAuth } from '@/hooks/useAuth';
 import { useFranchiseFinances } from '@/hooks/useFranchiseFinances';
 import { useFranchises } from '@/hooks/useFranchises';
@@ -14,7 +15,6 @@ import { FranchiseFinanceTable } from '@/components/franchiseFinance/FranchiseFi
 import { FranchiseFinanceForm } from '@/components/franchiseFinance/FranchiseFinanceForm';
 import { FranchiseFinanceSummaryCards } from '@/components/franchiseFinance/FranchiseFinanceSummaryCards';
 import { FranchiseFinanceSearchFilter } from '@/components/franchiseFinance/FranchiseFinanceSearchFilter';
-import { FranchiseFinancePagination } from '@/components/franchiseFinance/FranchiseFinancePagination';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -53,7 +53,7 @@ export default function KeuanganFranchise() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10);
 
   // Auth check - redirect if not admin or franchise
   useEffect(() => {
@@ -140,14 +140,13 @@ export default function KeuanganFranchise() {
   }, [filteredFinances]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredFinances.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedFinances = filteredFinances.slice(startIndex, startIndex + itemsPerPage);
+  const startIndex = (currentPage - 1) * perPage;
+  const paginatedFinances = filteredFinances.slice(startIndex, startIndex + perPage);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, itemsPerPage]);
+  }, [searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, perPage]);
 
   const handleEdit = (finance: FranchiseFinance) => {
     setEditingFinance(finance);
@@ -173,6 +172,11 @@ export default function KeuanganFranchise() {
     if (!open) {
       setEditingFinance(null);
     }
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
   };
 
   if (loading && finances.length === 0) {
@@ -242,15 +246,13 @@ export default function KeuanganFranchise() {
               onSortChange={setDateSortOrder}
             />
 
-            <div className="mt-4">
-              <FranchiseFinancePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                itemsPerPage={itemsPerPage}
-                onPageChange={setCurrentPage}
-                onItemsPerPageChange={setItemsPerPage}
-              />
-            </div>
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={filteredFinances.length}
+              perPage={perPage}
+              onPageChange={setCurrentPage}
+              onPerPageChange={handlePerPageChange}
+            />
           </CardContent>
         </Card>
 
