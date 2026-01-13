@@ -8,21 +8,23 @@ import {
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface OrderPaginationProps {
+interface TablePaginationProps {
   currentPage: number;
   totalItems: number;
   perPage: number;
   onPageChange: (page: number) => void;
   onPerPageChange: (perPage: number) => void;
+  perPageOptions?: number[];
 }
 
-export function OrderPagination({
+export function TablePagination({
   currentPage,
   totalItems,
   perPage,
   onPageChange,
   onPerPageChange,
-}: OrderPaginationProps) {
+  perPageOptions = [10, 25, 50, 100, 200],
+}: TablePaginationProps) {
   const totalPages = Math.ceil(totalItems / perPage);
 
   const getPageNumbers = () => {
@@ -73,15 +75,15 @@ export function OrderPagination({
           value={perPage.toString()}
           onValueChange={(value) => onPerPageChange(Number(value))}
         >
-          <SelectTrigger className="w-[70px] h-8 border-green-300 focus:ring-green-500 flex-shrink-0">
+          <SelectTrigger className="w-[70px] h-8 border-primary/30 focus:ring-primary flex-shrink-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="z-50" position="popper" sideOffset={4}>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="25">25</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-            <SelectItem value="200">200</SelectItem>
+            {perPageOptions.map((option) => (
+              <SelectItem key={option} value={option.toString()}>
+                {option}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <span className="whitespace-nowrap">
@@ -98,8 +100,8 @@ export function OrderPagination({
           className={cn(
             "flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors",
             currentPage === 1
-              ? "text-gray-300 cursor-not-allowed"
-              : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+              ? "text-muted-foreground/50 cursor-not-allowed"
+              : "text-muted-foreground hover:text-primary hover:bg-primary/10"
           )}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -110,7 +112,7 @@ export function OrderPagination({
         <div className="flex items-center gap-1">
           {getPageNumbers().map((page, index) =>
             page === '...' ? (
-              <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
+              <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
                 ...
               </span>
             ) : (
@@ -120,8 +122,8 @@ export function OrderPagination({
                 className={cn(
                   "h-9 w-9 rounded-md flex items-center justify-center text-sm font-medium transition-colors",
                   currentPage === page
-                    ? "bg-green-600 text-white"
-                    : "text-gray-600 hover:bg-green-50 hover:text-green-600"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                 )}
               >
                 {page}
@@ -137,8 +139,8 @@ export function OrderPagination({
           className={cn(
             "flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors",
             currentPage === totalPages
-              ? "text-gray-300 cursor-not-allowed"
-              : "text-gray-600 hover:text-green-600 hover:bg-green-50"
+              ? "text-muted-foreground/50 cursor-not-allowed"
+              : "text-muted-foreground hover:text-primary hover:bg-primary/10"
           )}
         >
           <span className="hidden sm:inline">Next</span>

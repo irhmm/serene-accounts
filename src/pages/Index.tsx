@@ -5,6 +5,7 @@ import { SummaryCard } from "@/components/finance/SummaryCard";
 import { TransactionForm } from "@/components/finance/TransactionForm";
 import { TransactionTable } from "@/components/finance/TransactionTable";
 import { SearchFilter } from "@/components/finance/SearchFilter";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useAuth } from "@/hooks/useAuth";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -23,21 +24,6 @@ import {
   Wallet,
   Loader2
 } from "lucide-react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -70,7 +56,7 @@ const Index = () => {
   const [dayFilter, setDayFilter] = useState<number | 'all'>('all');
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10);
 
   // Reset dayFilter when month or year changes
   useEffect(() => {
@@ -117,11 +103,10 @@ const Index = () => {
   }, [filteredTransactions]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
   const paginatedTransactions = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredTransactions, currentPage, itemsPerPage]);
+    const startIndex = (currentPage - 1) * perPage;
+    return filteredTransactions.slice(startIndex, startIndex + perPage);
+  }, [filteredTransactions, currentPage, perPage]);
 
   // Reset page when filters change
   const handleFilterChange = <T,>(setter: React.Dispatch<React.SetStateAction<T>>) => {
@@ -162,33 +147,9 @@ const Index = () => {
     }
   };
 
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: (number | 'ellipsis')[] = [];
-    const maxVisible = 5;
-    
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) pages.push(i);
-        pages.push('ellipsis');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
-      } else {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-        pages.push('ellipsis');
-        pages.push(totalPages);
-      }
-    }
-    return pages;
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
   };
 
   if (loading || authLoading) {
@@ -202,9 +163,6 @@ const Index = () => {
   if (!isAdmin) {
     return null;
   }
-
-  const startItem = filteredTransactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, filteredTransactions.length);
 
   return (
     <DashboardLayout>
@@ -286,66 +244,13 @@ const Index = () => {
         </section>
 
         {/* Pagination */}
-        {filteredTransactions.length > 0 && (
-          <section className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Menampilkan {startItem}-{endItem} dari {filteredTransactions.length} transaksi</span>
-              <Select 
-                value={itemsPerPage.toString()} 
-                onValueChange={(v) => {
-                  setItemsPerPage(parseInt(v));
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-[80px] h-8">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="25">25</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>per halaman</span>
-            </div>
-            
-            {totalPages > 1 && (
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    />
-                  </PaginationItem>
-                  
-                  {getPageNumbers().map((page, index) => (
-                    <PaginationItem key={index}>
-                      {page === 'ellipsis' ? (
-                        <span className="px-2">...</span>
-                      ) : (
-                        <PaginationLink
-                          onClick={() => setCurrentPage(page)}
-                          isActive={currentPage === page}
-                          className="cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      )}
-                    </PaginationItem>
-                  ))}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
-          </section>
-        )}
+        <TablePagination
+          currentPage={currentPage}
+          totalItems={filteredTransactions.length}
+          perPage={perPage}
+          onPageChange={setCurrentPage}
+          onPerPageChange={handlePerPageChange}
+        />
       </div>
 
       {/* Transaction Form Modal */}

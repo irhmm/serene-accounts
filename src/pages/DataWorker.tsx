@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WorkerTable } from '@/components/worker/WorkerTable';
 import { WorkerForm } from '@/components/worker/WorkerForm';
+import { TablePagination } from '@/components/ui/table-pagination';
 import { useWorkers } from '@/hooks/useWorkers';
 import { useAuth } from '@/hooks/useAuth';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -33,6 +34,21 @@ const DataWorker = () => {
   
   const [showForm, setShowForm] = useState(false);
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  // Paginate workers
+  const paginatedWorkers = useMemo(() => {
+    const startIndex = (currentPage - 1) * perPage;
+    return workers.slice(startIndex, startIndex + perPage);
+  }, [workers, currentPage, perPage]);
+
+  // Reset page when data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [workers.length]);
 
   const handleAddWorker = () => {
     setEditingWorker(null);
@@ -75,6 +91,11 @@ const DataWorker = () => {
     }
   };
 
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -97,10 +118,18 @@ const DataWorker = () => {
         </div>
 
         <WorkerTable
-          workers={workers}
+          workers={paginatedWorkers}
           isAdmin={isAdmin}
           onEdit={handleEditWorker}
           onDelete={handleDeleteWorker}
+        />
+        
+        <TablePagination
+          currentPage={currentPage}
+          totalItems={workers.length}
+          perPage={perPage}
+          onPageChange={setCurrentPage}
+          onPerPageChange={handlePerPageChange}
         />
       </div>
 

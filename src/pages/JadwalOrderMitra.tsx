@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { OrderTable } from '@/components/order/OrderTable';
 import { OrderForm } from '@/components/order/OrderForm';
-import { OrderPagination } from '@/components/order/OrderPagination';
+import { TablePagination } from '@/components/ui/table-pagination';
 import { OrderSummaryCards } from '@/components/order/OrderSummaryCards';
 import { OrderSearchFilter } from '@/components/order/OrderSearchFilter';
 import { useMitraOrders } from '@/hooks/useMitraOrders';
@@ -243,7 +243,7 @@ export default function JadwalOrderMitra() {
         </div>
 
         {/* Pagination - uses filtered total */}
-        <OrderPagination
+        <TablePagination
           currentPage={currentPage}
           totalItems={filteredOrders.length}
           perPage={perPage}
