@@ -102,6 +102,12 @@
     scrollbar-gutter: stable;
   }
 
+  /* Prevent layout shift when Radix Select/Dialog opens (scroll-lock adds padding-right) */
+  html[style*="padding-right"],
+  body[style*="padding-right"] {
+    padding-right: 0 !important;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight;
   }
