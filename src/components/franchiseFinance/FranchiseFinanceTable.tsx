@@ -74,9 +74,17 @@ export function FranchiseFinanceTable({
       groups[key].push(finance);
     });
     
-    return Object.entries(groups)
-      .sort(([a], [b]) => sortOrder === 'desc' ? b.localeCompare(a) : a.localeCompare(b))
-      .map(([key, items]) => ({
+    // Sort chronologically first to calculate cumulative totals
+    const sortedGroups = Object.entries(groups)
+      .sort(([a], [b]) => a.localeCompare(b)); // Always ascending for cumulative calculation
+    
+    // Calculate cumulative totals for pendapatan franchise (komisiMitra)
+    let cumulativeKomisiMitra = 0;
+    const groupsWithCumulative = sortedGroups.map(([key, items]) => {
+      const monthlyKomisiMitra = items.reduce((sum, f) => sum + f.komisiMitra, 0);
+      cumulativeKomisiMitra += monthlyKomisiMitra;
+      
+      return {
         key,
         month: parseInt(key.split('-')[1]),
         year: parseInt(key.split('-')[0]),
@@ -89,7 +97,15 @@ export function FranchiseFinanceTable({
         totalRevenue: items.reduce((sum, f) => sum + f.totalPaymentCust, 0),
         totalFeeMentor: items.reduce((sum, f) => sum + f.feeMentor, 0),
         totalKeuntungan: items.reduce((sum, f) => sum + f.keuntunganBersih, 0),
-      }));
+        totalKomisiMitra: monthlyKomisiMitra,
+        accumulatedKomisiMitra: cumulativeKomisiMitra,
+      };
+    });
+    
+    // Re-sort based on display order
+    return groupsWithCumulative.sort((a, b) => 
+      sortOrder === 'desc' ? b.key.localeCompare(a.key) : a.key.localeCompare(b.key)
+    );
   }, [finances, sortOrder]);
 
   if (finances.length === 0) {
@@ -170,22 +186,25 @@ export function FranchiseFinanceTable({
                 {/* Month Separator Header */}
                 <TableRow className="bg-muted/30 hover:bg-muted/30 border-y border-muted">
                   <TableCell colSpan={isAdmin ? 16 : 15} className="py-2">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center flex-wrap gap-2">
                       <span className="font-semibold text-foreground text-sm">
                         {format(new Date(group.year, group.month - 1), "MMMM yyyy", { locale: id })}
                       </span>
-                      <div className="flex gap-4 text-xs">
+                      <div className="flex gap-4 text-xs flex-wrap">
                         <span className="text-muted-foreground font-medium">
                           {group.totalOrders} Order
                         </span>
-                        <span className="text-emerald-600 font-medium">
+                        <span className="text-primary font-medium">
                           Revenue: {formatCurrency(group.totalRevenue)}
                         </span>
-                        <span className="text-amber-600 font-medium">
+                        <span className="text-destructive font-medium">
                           Fee Mentor: {formatCurrency(group.totalFeeMentor)}
                         </span>
-                        <span className="text-blue-600 font-medium">
+                        <span className="text-primary font-medium">
                           Keuntungan: {formatCurrency(group.totalKeuntungan)}
+                        </span>
+                        <span className="text-foreground font-semibold bg-accent/50 px-2 py-0.5 rounded">
+                          Akumulasi Pendapatan: {formatCurrency(group.accumulatedKomisiMitra)}
                         </span>
                       </div>
                     </div>
