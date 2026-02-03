@@ -44,6 +44,7 @@ export default function KeuanganFranchise() {
   const [monthFilter, setMonthFilter] = useState('all');
   const [yearFilter, setYearFilter] = useState('all');
   const [dayFilter, setDayFilter] = useState('all');
+  const [franchiseFilter, setFranchiseFilter] = useState('all');
   const [dateSortOrder, setDateSortOrder] = useState<SortOrder>('desc');
 
   // Reset dayFilter when month or year changes
@@ -86,6 +87,19 @@ export default function KeuanganFranchise() {
     return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
   }, [finances]);
 
+  // Get available franchises from data
+  const availableFranchises = useMemo(() => {
+    const franchiseMap = new Map<string, string>();
+    finances.forEach((f) => {
+      if (f.franchiseId && f.franchiseName) {
+        franchiseMap.set(f.franchiseId, f.franchiseName);
+      }
+    });
+    return Array.from(franchiseMap.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [finances]);
+
   // Filter finances
   const filteredFinances = useMemo(() => {
     const filtered = finances.filter((finance) => {
@@ -99,6 +113,9 @@ export default function KeuanganFranchise() {
 
       // Status filter
       const matchesStatus = statusFilter === 'all' || finance.statusPembayaran === statusFilter;
+
+      // Franchise filter
+      const matchesFranchise = franchiseFilter === 'all' || finance.franchiseId === franchiseFilter;
 
       // Month filter
       const orderMonth = (finance.tanggalClosingOrder.getMonth() + 1).toString().padStart(2, '0');
@@ -114,7 +131,7 @@ export default function KeuanganFranchise() {
         matchesDay = finance.tanggalClosingOrder.getDate() === parseInt(dayFilter);
       }
 
-      return matchesSearch && matchesStatus && matchesMonth && matchesYear && matchesDay;
+      return matchesSearch && matchesStatus && matchesFranchise && matchesMonth && matchesYear && matchesDay;
     });
 
     // Sort by tanggalClosingOrder
@@ -123,7 +140,7 @@ export default function KeuanganFranchise() {
       const dateB = b.tanggalClosingOrder.getTime();
       return dateSortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-  }, [finances, searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, dateSortOrder]);
+  }, [finances, searchTerm, statusFilter, franchiseFilter, monthFilter, yearFilter, dayFilter, dateSortOrder]);
 
   // Calculate totals from filtered data
   const totals = useMemo(() => {
@@ -134,8 +151,9 @@ export default function KeuanganFranchise() {
         totalFeeMentor: acc.totalFeeMentor + finance.feeMentor,
         totalKeuntungan: acc.totalKeuntungan + finance.keuntunganBersih,
         totalKomisiMitra: acc.totalKomisiMitra + finance.komisiMitra,
+        totalBelumDibayar: acc.totalBelumDibayar + (finance.statusPembayaran === 'pending' ? finance.komisiMitra : 0),
       }),
-      { totalOrders: 0, totalRevenue: 0, totalFeeMentor: 0, totalKeuntungan: 0, totalKomisiMitra: 0 }
+      { totalOrders: 0, totalRevenue: 0, totalFeeMentor: 0, totalKeuntungan: 0, totalKomisiMitra: 0, totalBelumDibayar: 0 }
     );
   }, [filteredFinances]);
 
@@ -146,7 +164,7 @@ export default function KeuanganFranchise() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, monthFilter, yearFilter, dayFilter, perPage]);
+  }, [searchTerm, statusFilter, franchiseFilter, monthFilter, yearFilter, dayFilter, perPage]);
 
   const handleEdit = (finance: FranchiseFinance) => {
     setEditingFinance(finance);
@@ -214,6 +232,7 @@ export default function KeuanganFranchise() {
           totalFeeMentor={totals.totalFeeMentor}
           totalKeuntungan={totals.totalKeuntungan}
           totalKomisiMitra={totals.totalKomisiMitra}
+          totalBelumDibayar={totals.totalBelumDibayar}
           isAdmin={isAdmin}
         />
 
@@ -229,6 +248,9 @@ export default function KeuanganFranchise() {
           dayFilter={dayFilter}
           onDayFilterChange={setDayFilter}
           availableYears={availableYears}
+          franchiseFilter={franchiseFilter}
+          onFranchiseFilterChange={setFranchiseFilter}
+          availableFranchises={availableFranchises}
         />
 
         <Card>

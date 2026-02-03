@@ -20,6 +20,9 @@ interface FranchiseFinanceSearchFilterProps {
   dayFilter: string;
   onDayFilterChange: (value: string) => void;
   availableYears: string[];
+  franchiseFilter: string;
+  onFranchiseFilterChange: (value: string) => void;
+  availableFranchises: { id: string; name: string }[];
 }
 
 const getDaysInMonth = (month: string, year: string): number => {
@@ -55,6 +58,9 @@ export function FranchiseFinanceSearchFilter({
   dayFilter,
   onDayFilterChange,
   availableYears,
+  franchiseFilter,
+  onFranchiseFilterChange,
+  availableFranchises,
 }: FranchiseFinanceSearchFilterProps) {
   const showDayFilter = monthFilter !== 'all' && yearFilter !== 'all';
   const daysInMonth = getDaysInMonth(monthFilter, yearFilter);
@@ -78,6 +84,20 @@ export function FranchiseFinanceSearchFilter({
           <SelectItem value="all">Semua Status</SelectItem>
           <SelectItem value="pending">Pending</SelectItem>
           <SelectItem value="done">Done</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select value={franchiseFilter} onValueChange={onFranchiseFilterChange}>
+        <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectValue placeholder="Franchise" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Semua Franchise</SelectItem>
+          {availableFranchises.map((franchise) => (
+            <SelectItem key={franchise.id} value={franchise.id}>
+              {franchise.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
